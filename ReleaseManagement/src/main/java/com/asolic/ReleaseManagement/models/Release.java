@@ -1,10 +1,12 @@
 package com.asolic.ReleaseManagement.models;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.UUID;
 
+@Data
 @Entity
 @Table(name="releases")
 public class Release {
@@ -26,4 +28,8 @@ public class Release {
     @ManyToOne
     @JoinColumn(name="project_id", referencedColumnName = "id")
     private Project project;
+
+    public Release(){
+
+    }
 }

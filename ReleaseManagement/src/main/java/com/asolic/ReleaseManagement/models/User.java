@@ -1,9 +1,11 @@
 package com.asolic.ReleaseManagement.models;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.UUID;
 
+@Data
 @Entity
 @Table(name="users")
 public class User {

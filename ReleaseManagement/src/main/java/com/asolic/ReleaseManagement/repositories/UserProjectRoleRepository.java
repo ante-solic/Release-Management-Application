@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface UserProjectRoleRepository extends JpaRepository<UserProjectRole, Long> {
     List<UserProjectRole> findByUserAndProject(User user, Project project);
-    List<UserProjectRole> fndByProject(Project project);
+    List<UserProjectRole> findByProject(Project project);
 }
