@@ -23,6 +23,6 @@ public class User {
     @Column(name="first_name")
     private String firstname;
 
-    @Column(name="lastname")
+    @Column(name="last_name")
     private String lastname;
 }
