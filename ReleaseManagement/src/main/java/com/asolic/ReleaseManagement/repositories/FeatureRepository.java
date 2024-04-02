@@ -14,5 +14,6 @@ public interface FeatureRepository extends JpaRepository<Feature, Long> {
     Optional<Feature> findById(UUID id);
 
     Optional<Feature> findByName(String name);
+    List<Feature> findAll();
     List<Feature> findByRelease(Release release);
 }

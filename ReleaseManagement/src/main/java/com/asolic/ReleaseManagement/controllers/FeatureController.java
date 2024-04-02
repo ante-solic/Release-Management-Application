@@ -1,11 +1,13 @@
 package com.asolic.ReleaseManagement.controllers;
 
+import com.asolic.ReleaseManagement.dto.FeatureDto;
 import com.asolic.ReleaseManagement.exceptions.FeatureNotFoundException;
 import com.asolic.ReleaseManagement.models.Feature;
 import com.asolic.ReleaseManagement.services.FeatureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -15,19 +17,24 @@ public class FeatureController {
     private FeatureService featureService;
 
     @PostMapping("/create")
-    public String createFeature(@RequestBody Feature feature){
-        featureService.createFeature(feature);
+    public String createFeature(@RequestBody FeatureDto featureDto){
+        featureService.createFeature(featureDto);
         return "success";
     }
 
     @GetMapping("/find")
-    public Feature getFeature(@RequestBody Feature feature) throws FeatureNotFoundException {
-        return featureService.getFeature(feature.getName());
+    public Feature getFeature(@RequestBody FeatureDto featureDto) throws FeatureNotFoundException {
+        return featureService.getFeature(featureDto.getName());
+    }
+
+    @GetMapping("/find/all")
+    public List<Feature> getAllFeatures() throws FeatureNotFoundException{
+        return featureService.getAllFeatures();
     }
 
     @PostMapping("/update/{id}")
-    public Feature updateFeature(@RequestBody Feature updatedFeature,@PathVariable UUID id) throws FeatureNotFoundException{
-        return featureService.updateFeature(updatedFeature,id);
+    public Feature updateFeature(@RequestBody FeatureDto updatedFeatureDto,@PathVariable UUID id) throws FeatureNotFoundException{
+        return featureService.updateFeature(updatedFeatureDto,id);
     }
 
     @PostMapping("/delete/{id}")
