@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface ProjectService {
 
-    void createProject(String name);
+    void createProject(ProjectDto projectDto);
 
     Project findProjectById(UUID id) throws ProjectNotFoundException;
 

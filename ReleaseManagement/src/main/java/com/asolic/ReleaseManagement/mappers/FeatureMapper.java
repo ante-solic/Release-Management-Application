@@ -5,8 +5,10 @@ import com.asolic.ReleaseManagement.models.Feature;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.springframework.stereotype.Component;
 
 @Mapper(componentModel = "spring")
+@Component
 public interface FeatureMapper {
     FeatureDto toDto(Feature feature);
 

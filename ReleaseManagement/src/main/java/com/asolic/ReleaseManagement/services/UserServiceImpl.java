@@ -15,16 +15,21 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService{
     @Autowired
-    private UserRepository userRepository;
-    private UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper){
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
 
     public void createUser(UserDto userDto){
         var user = userMapper.toEntity(userDto);
         userRepository.save(user);
     }
 
-    public User findUserByUsername(String username) throws UserNotFoundException{
-        var user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found!"));
+    public User findUser(UUID id) throws UserNotFoundException{
+        var user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User Not Found!"));
         return user;
     }
 

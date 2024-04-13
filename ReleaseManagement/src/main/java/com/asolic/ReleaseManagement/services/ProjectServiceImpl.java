@@ -2,6 +2,7 @@ package com.asolic.ReleaseManagement.services;
 
 import com.asolic.ReleaseManagement.dto.ProjectDto;
 import com.asolic.ReleaseManagement.exceptions.ProjectNotFoundException;
+import com.asolic.ReleaseManagement.mappers.ProjectMapper;
 import com.asolic.ReleaseManagement.models.Project;
 import com.asolic.ReleaseManagement.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,15 @@ import java.util.UUID;
 public class ProjectServiceImpl implements ProjectService{
     @Autowired
     private ProjectRepository projectRepository;
+    private final ProjectMapper projectMapper;
 
-    public void createProject(String name){
-        projectRepository.save(new Project(name));
+    public ProjectServiceImpl(ProjectMapper projectMapper){
+        this.projectMapper = projectMapper;
+    }
+
+    public void createProject(ProjectDto projectDto){
+        var project = projectMapper.toEntity(projectDto);
+        projectRepository.save(project);
     }
 
     public Project findProjectById(UUID id) throws ProjectNotFoundException{

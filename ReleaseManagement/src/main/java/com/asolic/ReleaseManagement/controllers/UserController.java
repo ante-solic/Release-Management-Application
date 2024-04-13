@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
+@CrossOrigin
 public class UserController {
     @Autowired
     private UserService userService;
@@ -23,9 +24,9 @@ public class UserController {
         return "success";
     }
 
-    @GetMapping("/find")
-    public User findUser(@RequestBody UserDto userDto) throws UserNotFoundException {
-        return userService.findUserByUsername(userDto.getUsername());
+    @GetMapping("/{id}")
+    public User findUser(@PathVariable UUID id) throws UserNotFoundException {
+        return userService.findUser(id);
     }
 
     @GetMapping("/find/all")
@@ -33,12 +34,12 @@ public class UserController {
         return userService.findAllUsers();
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public User updateUser(@RequestBody UserDto updatedUserDto, @PathVariable UUID id) throws UserNotFoundException{
         return userService.updateUser(updatedUserDto, id);
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public String deleteUser(@PathVariable UUID id) throws UserNotFoundException{
         userService.deleteUser(id);
         return "deleted";

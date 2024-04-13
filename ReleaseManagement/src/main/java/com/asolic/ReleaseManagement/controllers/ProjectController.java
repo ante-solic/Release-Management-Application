@@ -19,7 +19,7 @@ public class ProjectController {
 
     @PostMapping("/create")
     public String createProject(@RequestBody ProjectDto projectDto){
-        projectService.createProject(projectDto.getName());
+        projectService.createProject(projectDto);
         return "success";
     }
 

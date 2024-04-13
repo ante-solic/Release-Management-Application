@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface UserService {
     void createUser(UserDto userDto);
 
-    User findUserByUsername(String username) throws UserNotFoundException;
+    User findUser(UUID id) throws UserNotFoundException;
 
     List<User> findAllUsers() throws UserNotFoundException;
 
