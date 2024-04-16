@@ -23,9 +23,9 @@ public class ReleaseController {
         return "success";
     }
 
-    @GetMapping("/find")
-    public Release getRelease(@RequestBody ReleaseDto releaseDto) throws ReleaseNotFoundException {
-        return releaseService.findReleaseById(releaseDto.getId());
+    @GetMapping("/{id}")
+    public Release getRelease(@PathVariable UUID id) throws ReleaseNotFoundException {
+        return releaseService.findReleaseById(id);
     }
 
     @GetMapping("/find/all")
@@ -33,12 +33,12 @@ public class ReleaseController {
         return releaseService.findAllReleases();
     }
 
-    @PostMapping("/update/{releaseId}")
+    @PutMapping("/update/{releaseId}")
     public Release updateRelease(@RequestBody ReleaseDto updatedReleaseDto, @PathVariable UUID releaseId) throws ReleaseNotFoundException{
         return releaseService.updateRelease(updatedReleaseDto, releaseId);
     }
 
-    @PostMapping("/delete/{releaseId}")
+    @DeleteMapping("/delete/{releaseId}")
     public String deleteRelease(@PathVariable UUID releaseId) throws ReleaseNotFoundException{
         releaseService.deleteReleaseById(releaseId);
         return "deleted";

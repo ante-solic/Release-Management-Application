@@ -23,9 +23,9 @@ public class ProjectController {
         return "success";
     }
 
-    @GetMapping("/find")
-    public Project getProject(@RequestBody ProjectDto projectDto) throws ProjectNotFoundException {
-        return projectService.findProjectById(projectDto.getId());
+    @GetMapping("/{id}")
+    public Project getProject(@PathVariable UUID id) throws ProjectNotFoundException {
+        return projectService.findProjectById(id);
     }
 
     @GetMapping("/find/all")
@@ -33,12 +33,12 @@ public class ProjectController {
         return projectService.findAllProjects();
     }
 
-    @PostMapping("/update/{projectId}")
+    @PutMapping("/update/{projectId}")
     public Project updateProject(@RequestBody ProjectDto updatedProjectDto, @PathVariable UUID projectId){
         return projectService.updateProject(updatedProjectDto, projectId);
     }
 
-    @PostMapping("/delete/{projectId}")
+    @DeleteMapping("/delete/{projectId}")
     public String deleteProject(@PathVariable UUID projectId) throws ProjectNotFoundException{
         projectService.deleteById(projectId);
         return "deleted";

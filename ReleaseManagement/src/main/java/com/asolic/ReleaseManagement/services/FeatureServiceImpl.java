@@ -27,8 +27,8 @@ public class FeatureServiceImpl implements FeatureService{
         featureRepository.save(feature);
     }
 
-    public Feature getFeature(String featureNameDto) throws FeatureNotFoundException {
-        var feature = featureRepository.findByName(featureNameDto).orElseThrow(() -> new FeatureNotFoundException("Feature not found!"));
+    public Feature getFeature(UUID id) throws FeatureNotFoundException {
+        var feature = featureRepository.findById(id).orElseThrow(() -> new FeatureNotFoundException("Feature not found!"));
 
         return feature;
     }

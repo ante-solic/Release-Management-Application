@@ -22,9 +22,9 @@ public class FeatureController {
         return "success";
     }
 
-    @GetMapping("/find")
-    public Feature getFeature(@RequestBody FeatureDto featureDto) throws FeatureNotFoundException {
-        return featureService.getFeature(featureDto.getName());
+    @GetMapping("/{id}")
+    public Feature getFeature(@PathVariable UUID id) throws FeatureNotFoundException {
+        return featureService.getFeature(id);
     }
 
     @GetMapping("/find/all")
@@ -32,12 +32,12 @@ public class FeatureController {
         return featureService.getAllFeatures();
     }
 
-    @PostMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public Feature updateFeature(@RequestBody FeatureDto updatedFeatureDto,@PathVariable UUID id) throws FeatureNotFoundException{
         return featureService.updateFeature(updatedFeatureDto,id);
     }
 
-    @PostMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public String deleteFeature(@PathVariable UUID id) throws FeatureNotFoundException{
         featureService.deleteFeature(id);
         return "deleted";

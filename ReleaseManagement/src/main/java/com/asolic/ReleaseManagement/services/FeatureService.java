@@ -12,7 +12,7 @@ public interface FeatureService {
 
     void createFeature(FeatureDto featureDto);
 
-    Feature getFeature(String featureNameDto) throws FeatureNotFoundException;
+    Feature getFeature(UUID id) throws FeatureNotFoundException;
     List<Feature> getAllFeatures() throws FeatureNotFoundException;
     Feature updateFeature(FeatureDto updatedFeatureDto, UUID featureId) throws FeatureNotFoundException;
     void deleteFeature(UUID feature) throws FeatureNotFoundException;
