@@ -4,6 +4,8 @@ import com.asolic.ReleaseManagement.repositories.ProjectRepository;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -22,4 +24,7 @@ public class Project {
     public Project(String name){
         this.name = name;
     }
+
+    @ManyToMany(mappedBy = "projects")
+    private Set<User> users = new HashSet<>();
 }

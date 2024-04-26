@@ -10,8 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ReleaseRepository extends JpaRepository<Release, Long> {
+public interface ReleaseRepository extends JpaRepository<Release, UUID> {
     List<Release> findByProject(Project project);
-
-    Optional<Release> findById(UUID id);
 }

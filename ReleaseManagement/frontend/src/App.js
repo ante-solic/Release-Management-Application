@@ -20,12 +20,17 @@ import FeatureAdd from './components/FeatureAdd';
 import FeatureList from './components/FeatureList';
 import FeatureEdit from './components/FeatureEdit';
 import Feature from './components/Feature';
+import SignupPage from './components/SignUpPage';
+import LoginPage from './components/LoginPage';
 
 function App() {
   return <div className='App'>
     <Router>
       <Navbar></Navbar>
       <Routes>
+        <Route path="/signup" element={<SignupPage></SignupPage>}/>
+        <Route path="/login" element={<LoginPage></LoginPage>}/>
+
         <Route exact path="/" element={<Home></Home>}/>
         <Route exact path="/user/add" element={<UserAdd></UserAdd>}/>
         <Route exact path="/user/edit/:id" element={<UserEdit></UserEdit>}/>

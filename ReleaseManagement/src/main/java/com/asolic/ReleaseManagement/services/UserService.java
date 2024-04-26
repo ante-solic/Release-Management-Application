@@ -8,7 +8,7 @@ import com.asolic.ReleaseManagement.models.User;
 import java.util.List;
 import java.util.UUID;
 
-public interface UserService {
+public interface UserService{
     void createUser(UserDto userDto);
 
     User findUser(UUID id) throws UserNotFoundException;
@@ -18,4 +18,6 @@ public interface UserService {
     User updateUser(UserDto updatedUserDto, UUID userId) throws UserNotFoundException;
 
     void deleteUser(UUID userId) throws UserNotFoundException;
+
+
 }

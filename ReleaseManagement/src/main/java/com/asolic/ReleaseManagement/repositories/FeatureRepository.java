@@ -10,10 +10,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface FeatureRepository extends JpaRepository<Feature, Long> {
-    Optional<Feature> findById(UUID id);
+public interface FeatureRepository extends JpaRepository<Feature, UUID> {
 
     Optional<Feature> findByName(String name);
-    List<Feature> findAll();
     List<Feature> findByRelease(Release release);
 }
