@@ -13,6 +13,13 @@ export default function Feature() {
   const {id} = useParams()
 
   useEffect(() => {
+    const token = localStorage.getItem('jwtToken');
+    console.log('Token from local storage:', token);
+
+    if (token) {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
+    }
     loadFeature()
   },[]);
 

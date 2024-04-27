@@ -61,13 +61,12 @@ public class SecurityConfig{
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(
-                        authorize -> authorize.requestMatchers("/api/**")
-                                .authenticated().anyRequest().permitAll())
+                        authorize -> authorize
+                                .requestMatchers("/user/**", "/project/**", "/release/**", "feature/**").authenticated()
+                                .anyRequest().permitAll())
                 .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()));
-        //.httpBasic(Customizer.withDefaults())
-        //.formLogin(Customizer.withDefaults());
         return http.build();
     }
 

@@ -1,4 +1,5 @@
 import { Component, useEffect, useState } from 'react';
+import axios from 'axios';
 import './App.css';
 import Home from './components/Home';
 import UserList from './components/UserList';
@@ -24,6 +25,7 @@ import SignupPage from './components/SignUpPage';
 import LoginPage from './components/LoginPage';
 
 function App() {
+
   return <div className='App'>
     <Router>
       <Navbar></Navbar>

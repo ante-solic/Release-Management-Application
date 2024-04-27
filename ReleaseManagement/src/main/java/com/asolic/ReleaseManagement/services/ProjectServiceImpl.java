@@ -5,6 +5,7 @@ import com.asolic.ReleaseManagement.exceptions.ProjectNotFoundException;
 import com.asolic.ReleaseManagement.mappers.ProjectMapper;
 import com.asolic.ReleaseManagement.models.Project;
 import com.asolic.ReleaseManagement.repositories.ProjectRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +13,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class ProjectServiceImpl implements ProjectService{
-    @Autowired
-    private ProjectRepository projectRepository;
+    private final ProjectRepository projectRepository;
     private final ProjectMapper projectMapper;
-
-    public ProjectServiceImpl(ProjectMapper projectMapper){
-        this.projectMapper = projectMapper;
-    }
 
     public void createProject(ProjectDto projectDto){
         var project = projectMapper.toEntity(projectDto);

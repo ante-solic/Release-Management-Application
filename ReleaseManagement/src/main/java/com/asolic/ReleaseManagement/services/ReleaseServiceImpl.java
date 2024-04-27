@@ -6,6 +6,7 @@ import com.asolic.ReleaseManagement.mappers.FeatureMapper;
 import com.asolic.ReleaseManagement.mappers.ReleaseMapper;
 import com.asolic.ReleaseManagement.models.Release;
 import com.asolic.ReleaseManagement.repositories.ReleaseRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +15,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class ReleaseServiceImpl implements ReleaseService{
-    @Autowired
-    private ReleaseRepository releaseRepository;
+    private final ReleaseRepository releaseRepository;
 
     private final ReleaseMapper releaseMapper;
-
-    public ReleaseServiceImpl(ReleaseMapper releaseMapper){
-        this.releaseMapper = releaseMapper;
-    }
 
     public void createRelease(ReleaseDto releaseDto){
         var release = releaseMapper.toEntity(releaseDto);

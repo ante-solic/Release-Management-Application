@@ -1,7 +1,20 @@
-import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
+import React, {Component, useEffect, useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 
 export default function Navbar(){
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const history = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem('jwtToken');
+        setIsLoggedIn(!!token);
+    }, []);
+
+    const handleLogout = () =>{
+        localStorage.removeItem(`jwtToken`);
+        history(`/login`);
+    }
+
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
         <div className="container-fluid">
@@ -11,7 +24,11 @@ export default function Navbar(){
             aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
             </button>
-            <Link className='btn btn-outline-light' to="/user/add">Add User</Link>
+            {isLoggedIn ? (
+                <button className='btn btn-outline-light mx-2' onClick={handleLogout} >Logout</button>
+            ) : (
+                <Link className='btn btn-outline-light' to="/login">Login</Link>
+            )}
         </div>
         </nav>
     )

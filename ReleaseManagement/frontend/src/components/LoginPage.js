@@ -20,9 +20,17 @@ function LoginPage() {
                 return; 
             } 
   
-            const response = await axios.post('/user/signin', { username, password }); 
+            const response = await axios.post('/auth/signin', { username, password }); 
             console.log('Login successful:', response.data); 
+
+            const token = response.data.jwt;
+
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+            localStorage.setItem('jwtToken', token);
+
             history('/'); 
+            
         } catch (error) { 
             console.error('Login failed:', error.response ? error.response.data : error.message); 
             setError('Invalid username or password.'); 

@@ -49,7 +49,7 @@ function SignupPage(){
                 throw new Error("Passwords do not match");
             }
 
-            const response = await axios.post('/user/signup', {
+            const response = await axios.post('/auth/signup', {
                 username,
                 email,
                 password,
@@ -59,7 +59,7 @@ function SignupPage(){
             });
 
             console.log(response.data);
-            history('/');
+            history('/login');
         } catch (error){
             console.error('Signup failed:', error.response ? error.response.data : error.message);
             setError(error.response ? error.response.data : error.message);

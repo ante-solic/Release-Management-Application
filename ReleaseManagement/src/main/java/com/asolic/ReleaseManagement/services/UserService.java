@@ -19,5 +19,5 @@ public interface UserService{
 
     void deleteUser(UUID userId) throws UserNotFoundException;
 
-
+    User registerUser(UserDto userDto);
 }

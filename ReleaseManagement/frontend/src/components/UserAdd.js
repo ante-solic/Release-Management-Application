@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from "axios"
 import {Link, useNavigate} from "react-router-dom"
 
@@ -15,6 +15,13 @@ export default function UserAdd() {
     })
 
     const{username,email,password,firstname,lastname} = user
+
+    useEffect(() => {
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
+    }, []); 
 
     const onInputChange=(e)=>{
 

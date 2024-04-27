@@ -5,6 +5,7 @@ import com.asolic.ReleaseManagement.exceptions.FeatureNotFoundException;
 import com.asolic.ReleaseManagement.mappers.FeatureMapper;
 import com.asolic.ReleaseManagement.models.Feature;
 import com.asolic.ReleaseManagement.repositories.FeatureRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +13,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class FeatureServiceImpl implements FeatureService{
-    @Autowired
-    private FeatureRepository featureRepository;
+    private final FeatureRepository featureRepository;
     private final FeatureMapper featureMapper;
-
-    public FeatureServiceImpl(FeatureMapper featureMapper){
-        this.featureMapper = featureMapper;
-    }
 
     public void createFeature(FeatureDto featureDto){
         var feature = featureMapper.toEntity(featureDto);

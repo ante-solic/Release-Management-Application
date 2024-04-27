@@ -3,14 +3,18 @@ package com.asolic.ReleaseManagement.services;
 import com.asolic.ReleaseManagement.dto.UserDto;
 import com.asolic.ReleaseManagement.exceptions.UserNotFoundException;
 import com.asolic.ReleaseManagement.mappers.UserMapper;
+import com.asolic.ReleaseManagement.models.Role;
 import com.asolic.ReleaseManagement.models.User;
+import com.asolic.ReleaseManagement.repositories.RoleRepository;
 import com.asolic.ReleaseManagement.repositories.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -18,7 +22,8 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
-
+    private final RoleRepository roleRepository;
+    private PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
     public void createUser(UserDto userDto){
@@ -55,5 +60,26 @@ public class UserServiceImpl implements UserService{
         userRepository.delete(user);
     }
 
+    public User registerUser(UserDto userDto){
 
+        var roleUser = roleRepository.findByName(userDto.getRole());
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleUser);
+
+        var isUsernameExists = userRepository.findByUsername(userDto.getUsername()).orElse(null);
+
+        if(isUsernameExists != null){
+            throw new NullPointerException("User already exists");
+        }
+
+        var createdUser = new User();
+        createdUser.setUsername(userDto.getUsername());
+        createdUser.setEmail(userDto.getEmail());
+        createdUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        createdUser.setFirstname(userDto.getFirstname());
+        createdUser.setLastname(userDto.getLastname());
+        createdUser.setRoles(roles);
+
+        return userRepository.save(createdUser);
+    }
 }
