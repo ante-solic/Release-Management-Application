@@ -5,6 +5,8 @@ import com.asolic.ReleaseManagement.exceptions.ReleaseNotFoundException;
 import com.asolic.ReleaseManagement.models.Release;
 import com.asolic.ReleaseManagement.services.ReleaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +20,9 @@ public class ReleaseController {
     private ReleaseService releaseService;
 
     @PostMapping("/create")
-    public String createRelease(@RequestBody ReleaseDto releaseDto){
+    public ResponseEntity<String> createRelease(@RequestBody ReleaseDto releaseDto){
         releaseService.createRelease(releaseDto);
-        return "success";
+        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -39,8 +41,8 @@ public class ReleaseController {
     }
 
     @DeleteMapping("/delete/{releaseId}")
-    public String deleteRelease(@PathVariable UUID releaseId) throws ReleaseNotFoundException{
+    public ResponseEntity<String> deleteRelease(@PathVariable UUID releaseId) throws ReleaseNotFoundException{
         releaseService.deleteReleaseById(releaseId);
-        return "deleted";
+        return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
 }

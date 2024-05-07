@@ -10,4 +10,5 @@ public class FeatureDto {
     private String name;
     private String description;
     private ReleaseDto release;
+    private Boolean status;
 }

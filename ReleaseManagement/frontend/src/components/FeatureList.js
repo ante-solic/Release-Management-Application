@@ -40,6 +40,7 @@ export default function FeatureList() {
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
                         <th scope="col">Description</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -50,6 +51,11 @@ export default function FeatureList() {
                                 <th scope="row" key={index}>{index+1}</th>
                                 <td>{feature.name}</td>
                                 <td>{feature.description}</td>
+                                <td>
+                                    <span style={{ color: feature.status ? 'green' : 'red' }}>
+                                        {feature.status ? 'On' : 'Off'}
+                                    </span>
+                                </td>
                                 <td>
                                     <Link className='btn btn-primary mx-2' to={`/feature/view/${feature.id}`}>View</Link>
                                     <Link className='btn btn-outline-primary mx-2' to={`/feature/edit/${feature.id}`}>Edit</Link>

@@ -5,6 +5,8 @@ import com.asolic.ReleaseManagement.exceptions.UserNotFoundException;
 import com.asolic.ReleaseManagement.models.User;
 import com.asolic.ReleaseManagement.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +21,9 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/create")
-    public String createUser(@RequestBody UserDto userDto){
+    public ResponseEntity<String> createUser(@RequestBody UserDto userDto){
         userService.createUser(userDto);
-        return "success";
+        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -41,8 +43,8 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteUser(@PathVariable UUID id) throws UserNotFoundException{
+    public ResponseEntity<String> deleteUser(@PathVariable UUID id) throws UserNotFoundException{
         userService.deleteUser(id);
-        return "deleted";
+        return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
 }

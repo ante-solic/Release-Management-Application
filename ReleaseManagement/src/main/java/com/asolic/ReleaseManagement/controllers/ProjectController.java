@@ -6,6 +6,8 @@ import com.asolic.ReleaseManagement.models.Project;
 import com.asolic.ReleaseManagement.services.ProjectService;
 import com.asolic.ReleaseManagement.services.ProjectServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +20,9 @@ public class ProjectController {
     private ProjectService projectService;
 
     @PostMapping("/create")
-    public String createProject(@RequestBody ProjectDto projectDto){
+    public ResponseEntity<String> createProject(@RequestBody ProjectDto projectDto){
         projectService.createProject(projectDto);
-        return "success";
+        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -39,8 +41,8 @@ public class ProjectController {
     }
 
     @DeleteMapping("/delete/{projectId}")
-    public String deleteProject(@PathVariable UUID projectId) throws ProjectNotFoundException{
+    public ResponseEntity<String> deleteProject(@PathVariable UUID projectId) throws ProjectNotFoundException{
         projectService.deleteById(projectId);
-        return "deleted";
+        return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
 }

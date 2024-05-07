@@ -18,6 +18,8 @@ public class Feature {
 
     private String description;
 
+    private Boolean status;
+
     @ManyToOne
     @JoinColumn(name="release_id", referencedColumnName = "id")
     private Release release;

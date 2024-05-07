@@ -56,4 +56,10 @@ public class FeatureServiceImpl implements FeatureService{
 
         featureRepository.delete(feature);
     }
+
+    public boolean isFeatureEnabled(String featureName) throws FeatureNotFoundException{
+        var feature = featureRepository.findByName(featureName).orElseThrow(() -> new FeatureNotFoundException("Feature not found!"));
+
+        return feature.getStatus();
+    }
 }

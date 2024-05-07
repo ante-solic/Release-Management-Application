@@ -7,7 +7,8 @@ export default function Feature() {
   const [feature,setFeature]=useState({
     mame:"",
     description:"",
-    release:""
+    release:"",
+    status:""
   })
 
   const {id} = useParams()
@@ -48,6 +49,12 @@ export default function Feature() {
                     <li className='list-group-item'>
                       <b>Release: </b>
                         {feature.release.name}
+                    </li>
+                    <li className='list-group-item'>
+                      <b>Status: </b>
+                        <span style={{ color: feature.status ? 'green' : 'red' }}>
+                            {feature.status ? 'On' : 'Off'}
+                        </span>
                     </li>
                   </ul>
                 </div>

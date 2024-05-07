@@ -5,6 +5,8 @@ import com.asolic.ReleaseManagement.exceptions.FeatureNotFoundException;
 import com.asolic.ReleaseManagement.models.Feature;
 import com.asolic.ReleaseManagement.services.FeatureService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,9 +19,9 @@ public class FeatureController {
     private FeatureService featureService;
 
     @PostMapping("/create")
-    public String createFeature(@RequestBody FeatureDto featureDto){
+    public ResponseEntity<String> createFeature(@RequestBody FeatureDto featureDto){
         featureService.createFeature(featureDto);
-        return "success";
+        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -38,8 +40,15 @@ public class FeatureController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteFeature(@PathVariable UUID id) throws FeatureNotFoundException{
+    public ResponseEntity<String> deleteFeature(@PathVariable UUID id) throws FeatureNotFoundException{
         featureService.deleteFeature(id);
-        return "deleted";
+        return new ResponseEntity<>("Deleted", HttpStatus.OK);
+    }
+
+    @GetMapping("/is-enabled/{featureName}")
+    public ResponseEntity<Boolean> isFeatureEnabled(@PathVariable String featureName) throws FeatureNotFoundException{
+        var isEnabled = featureService.isFeatureEnabled(featureName);
+
+        return ResponseEntity.ok(isEnabled);
     }
 }

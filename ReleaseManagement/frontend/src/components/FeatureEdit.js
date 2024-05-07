@@ -11,10 +11,11 @@ export default function FeatureEdit() {
     const [feature,setFeature] = useState({
         name:"",
         description:"",
-        release: ""
+        release: "",
+        status:""
     })
 
-    const{name,description,release} = feature
+    const{name,description,release,status} = feature
 
     const onInputChange=(e)=>{
 
@@ -66,6 +67,13 @@ export default function FeatureEdit() {
                 <div className='mb-3'>
                     <label htmlFor='Release' className='form-label'>Release</label>
                     <p>{release.name}</p>
+                </div>
+                <div className='mb-3'>
+                    <label htmlFor='Status' className='form-label'>Status</label>
+                    <input type={"radio"}  id="statusTrue" className='form-control' placeholder='Enter feature status' name="status" value={true} checked={status} onChange={(e)=>onInputChange(e)}></input>
+                    <label for="statusTrue">True</label>
+                    <input type={"radio"}  id="statusFalse" className='form-control' placeholder='Enter feature status' name="status" value={false} checked={!status} onChange={(e)=>onInputChange(e)}></input>
+                    <label for="statusFalse">False</label>
                 </div>
                 <button type='submit' className='btn btn-outline-primary'>Submit</button>
                 <Link className='btn btn-outline-danger mx-2' to="/feature/view/all">Cancel</Link>
