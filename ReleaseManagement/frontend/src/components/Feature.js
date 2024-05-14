@@ -8,8 +8,11 @@ export default function Feature() {
     mame:"",
     description:"",
     release:"",
-    status:""
+    status:"",
+    enableType:""
   })
+
+  const [clients, setClients] = useState([]);
 
   const {id} = useParams()
 
@@ -21,12 +24,28 @@ export default function Feature() {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
     }
-    loadFeature()
+    loadFeature();
+    loadClients();
   },[]);
 
   const loadFeature = async ()=>{
     const result = await axios.get(`/feature/${id}`)
     setFeature(result.data)
+  }
+
+  const loadClients =  async ()=>{
+    const result = await axios.get(`/feature/clients/${id}`)
+    setClients(result.data)
+  }
+
+  const handleUnassign = async (clientId) => {
+    try {
+      await axios.delete(`/client/unassign/${clientId}/${id}`);
+      loadFeature();
+      loadClients();
+    } catch(error) {
+      console.error("Error unassigning client:", error);
+    }
   }
 
   return (
@@ -56,9 +75,25 @@ export default function Feature() {
                             {feature.status ? 'On' : 'Off'}
                         </span>
                     </li>
+                    <li className='list-group-item'>
+                      <b>Enable Type: </b>
+                        {feature.enableType}
+                    </li>
+                    <li className='list-group-item'>
+                      <b>Clients: </b>
+                        {clients.map((client, index) => (
+                          <div key={index} style={{ marginBottom: '0.5rem' }}>
+                            <span>{client.accountId}</span>
+                            <button className="btn btn-sm btn-danger ms-2" onClick={() => handleUnassign(client.id)}>
+                              Unassign
+                            </button>
+                          </div>
+                        ))}
+                    </li>
                   </ul>
                 </div>
               </div>
+              <Link className='btn btn-primary my-2 mx-2' to={`/client/assign/${id}`}>Assign Client</Link>
               <Link className='btn btn-primary my-2 mx-2' to={"/feature/view/all"}>Back to Feature List</Link>
         </div>
       </div>

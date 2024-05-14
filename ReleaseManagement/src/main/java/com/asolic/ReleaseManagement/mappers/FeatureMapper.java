@@ -19,5 +19,6 @@ public interface FeatureMapper {
     @Mapping(target = "feature.description", source = "featureDto.description")
     @Mapping(target = "feature.release", source = "featureDto.release")
     @Mapping(target = "feature.status", source = "featureDto.status")
+    @Mapping(target = "feature.enableType", source = "featureDto.enableType")
     Feature updateToEntity(FeatureDto featureDto, @MappingTarget Feature feature);
 }

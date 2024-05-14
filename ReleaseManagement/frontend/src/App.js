@@ -23,6 +23,9 @@ import FeatureEdit from './components/FeatureEdit';
 import Feature from './components/Feature';
 import SignupPage from './components/SignUpPage';
 import LoginPage from './components/LoginPage';
+import ClientAdd from './components/ClientAdd';
+import ClientList from './components/ClientList';
+import ClientAssign from './components/ClientAssign';
 
 function App() {
 
@@ -52,6 +55,10 @@ function App() {
         <Route exact path="/feature/view/all" element={<FeatureList></FeatureList>}/>
         <Route exact path="/feature/edit/:id" element={<FeatureEdit></FeatureEdit>}/>
         <Route exact path="/feature/view/:id" element={<Feature></Feature>}/>
+
+        <Route exact path="/client/create/" element={<ClientAdd></ClientAdd>}/>
+        <Route exact path="/client/view/all" element={<ClientList></ClientList>}/>
+        <Route exact path="/client/assign/:id" element={<ClientAssign></ClientAssign>}/>
       </Routes>
     </Router>
   </div>;

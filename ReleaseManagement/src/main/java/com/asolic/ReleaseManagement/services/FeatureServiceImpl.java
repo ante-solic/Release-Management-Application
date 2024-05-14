@@ -3,13 +3,17 @@ package com.asolic.ReleaseManagement.services;
 import com.asolic.ReleaseManagement.dto.FeatureDto;
 import com.asolic.ReleaseManagement.exceptions.FeatureNotFoundException;
 import com.asolic.ReleaseManagement.mappers.FeatureMapper;
+import com.asolic.ReleaseManagement.models.Client;
 import com.asolic.ReleaseManagement.models.Feature;
+import com.asolic.ReleaseManagement.models.enums.EnableType;
 import com.asolic.ReleaseManagement.repositories.FeatureRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.desktop.SystemSleepEvent;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -24,10 +28,10 @@ public class FeatureServiceImpl implements FeatureService{
         featureRepository.save(feature);
     }
 
-    public Feature getFeature(UUID id) throws FeatureNotFoundException {
+    public FeatureDto getFeature(UUID id) throws FeatureNotFoundException {
         var feature = featureRepository.findById(id).orElseThrow(() -> new FeatureNotFoundException("Feature not found!"));
-
-        return feature;
+        var featureDto = featureMapper.toDto(feature);
+        return featureDto;
     }
 
     public List<Feature> getAllFeatures() throws FeatureNotFoundException{
@@ -41,10 +45,17 @@ public class FeatureServiceImpl implements FeatureService{
     }
 
     public Feature updateFeature(FeatureDto updatedFeatureDto, UUID featureId) throws FeatureNotFoundException{
-        featureRepository.findById(featureId).orElseThrow(() -> new FeatureNotFoundException("Feature not found!"));;
-        updatedFeatureDto.setId(featureId);
+        var feature = featureRepository.findById(featureId).orElseThrow(() -> new FeatureNotFoundException("Feature not found!"));;
 
-        var feature = featureMapper.toEntity(updatedFeatureDto);
+        feature.setName(updatedFeatureDto.getName());
+        feature.setDescription(updatedFeatureDto.getDescription());
+        feature.setStatus(updatedFeatureDto.getStatus());
+
+        var enableTypeStr = updatedFeatureDto.getEnableType();
+
+        var enableType = EnableType.valueOf(enableTypeStr);
+
+        feature.setEnableType(enableType);
 
         featureRepository.save(feature);
 
@@ -61,5 +72,11 @@ public class FeatureServiceImpl implements FeatureService{
         var feature = featureRepository.findByName(featureName).orElseThrow(() -> new FeatureNotFoundException("Feature not found!"));
 
         return feature.getStatus();
+    }
+
+    public Set<Client> getAllFeatureClients(UUID id){
+        var feature = featureRepository.findById(id).get();
+        Set<Client> clients = feature.getClients();
+        return clients;
     }
 }

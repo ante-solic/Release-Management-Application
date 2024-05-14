@@ -2,6 +2,7 @@ package com.asolic.ReleaseManagement.controllers;
 
 import com.asolic.ReleaseManagement.dto.FeatureDto;
 import com.asolic.ReleaseManagement.exceptions.FeatureNotFoundException;
+import com.asolic.ReleaseManagement.models.Client;
 import com.asolic.ReleaseManagement.models.Feature;
 import com.asolic.ReleaseManagement.services.FeatureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -25,8 +27,13 @@ public class FeatureController {
     }
 
     @GetMapping("/{id}")
-    public Feature getFeature(@PathVariable UUID id) throws FeatureNotFoundException {
+    public FeatureDto getFeature(@PathVariable UUID id) throws FeatureNotFoundException {
         return featureService.getFeature(id);
+    }
+
+    @GetMapping("/clients/{id}")
+    public Set<Client> getFeatureClients(@PathVariable UUID id){
+        return featureService.getAllFeatureClients(id);
     }
 
     @GetMapping("/find/all")
@@ -51,4 +58,6 @@ public class FeatureController {
 
         return ResponseEntity.ok(isEnabled);
     }
+
+
 }
