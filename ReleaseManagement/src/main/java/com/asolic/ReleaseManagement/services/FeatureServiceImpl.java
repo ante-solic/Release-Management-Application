@@ -5,22 +5,25 @@ import com.asolic.ReleaseManagement.exceptions.FeatureNotFoundException;
 import com.asolic.ReleaseManagement.mappers.FeatureMapper;
 import com.asolic.ReleaseManagement.models.Client;
 import com.asolic.ReleaseManagement.models.Feature;
+import com.asolic.ReleaseManagement.models.Release;
 import com.asolic.ReleaseManagement.models.enums.EnableType;
+import com.asolic.ReleaseManagement.repositories.ClientRepository;
 import com.asolic.ReleaseManagement.repositories.FeatureRepository;
+import com.asolic.ReleaseManagement.repositories.ReleaseRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.awt.desktop.SystemSleepEvent;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class FeatureServiceImpl implements FeatureService{
     private final FeatureRepository featureRepository;
     private final FeatureMapper featureMapper;
+    private final ClientRepository clientRepository;
+    private final ReleaseRepository releaseRepository;
 
     public void createFeature(FeatureDto featureDto){
         var feature = featureMapper.toEntity(featureDto);
@@ -68,10 +71,18 @@ public class FeatureServiceImpl implements FeatureService{
         featureRepository.delete(feature);
     }
 
-    public boolean isFeatureEnabled(String featureName) throws FeatureNotFoundException{
+    public boolean isFeatureEnabled(String featureName, String accountId) throws FeatureNotFoundException{
         var feature = featureRepository.findByName(featureName).orElseThrow(() -> new FeatureNotFoundException("Feature not found!"));
+        var client = clientRepository.findByAccountId(accountId);
 
-        return feature.getStatus();
+        if(feature.getEnableType() == EnableType.PER_ACCOUNT && feature.getClients().contains(client)){
+            return feature.getStatus();
+        }
+        else if (feature.getEnableType() == EnableType.ALL) {
+            return feature.getStatus();
+        }
+
+        return false;
     }
 
     public Set<Client> getAllFeatureClients(UUID id){
@@ -79,4 +90,29 @@ public class FeatureServiceImpl implements FeatureService{
         Set<Client> clients = feature.getClients();
         return clients;
     }
+
+    @Scheduled(fixedRate = 40000)
+    public void checkReleaseDate(){
+        Date today = new Date();
+        List<Release> releases = releaseRepository.findAll();
+
+        List<Feature> featuresToUpdate = new ArrayList<>();
+
+        for(Release release: releases){
+            if (release.getReleaseDate().before(today)){
+                System.out.println("Feature to update" + release.getName());
+                var features = featureRepository.findByRelease(release);
+                featuresToUpdate.addAll(features);
+            }
+        }
+
+        if (!featuresToUpdate.isEmpty()) {
+            for (Feature feature : featuresToUpdate) {
+                feature.setStatus(true);
+            }
+            featureRepository.saveAll(featuresToUpdate);
+        }
+    }
+
+
 }

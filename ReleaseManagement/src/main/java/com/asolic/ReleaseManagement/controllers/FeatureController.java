@@ -8,6 +8,7 @@ import com.asolic.ReleaseManagement.services.FeatureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,12 +53,11 @@ public class FeatureController {
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
 
-    @GetMapping("/is-enabled/{featureName}")
-    public ResponseEntity<Boolean> isFeatureEnabled(@PathVariable String featureName) throws FeatureNotFoundException{
-        var isEnabled = featureService.isFeatureEnabled(featureName);
+    @GetMapping("/enabled/{featureName}/{accountId}")
+    public ResponseEntity<Boolean> isFeatureEnabled(@PathVariable String featureName, @PathVariable String accountId) throws FeatureNotFoundException{
+        var isEnabled = featureService.isFeatureEnabled(featureName, accountId);
 
         return ResponseEntity.ok(isEnabled);
     }
-
 
 }

@@ -18,8 +18,7 @@ public interface FeatureService {
     List<Feature> getAllFeatures() throws FeatureNotFoundException;
     Feature updateFeature(FeatureDto updatedFeatureDto, UUID featureId) throws FeatureNotFoundException;
     void deleteFeature(UUID feature) throws FeatureNotFoundException;
-
-    boolean isFeatureEnabled(String featureName) throws FeatureNotFoundException;
-
+    boolean isFeatureEnabled(String featureName, String accountId) throws FeatureNotFoundException;
     Set<Client> getAllFeatureClients(UUID id);
+    void checkReleaseDate();
 }
