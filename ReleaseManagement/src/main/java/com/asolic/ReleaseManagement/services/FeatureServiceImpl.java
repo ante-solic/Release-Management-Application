@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.awt.desktop.SystemSleepEvent;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -73,28 +74,51 @@ public class FeatureServiceImpl implements FeatureService{
 
     public boolean isFeatureEnabled(String featureName, String accountId) throws FeatureNotFoundException{
         var feature = featureRepository.findByName(featureName).orElseThrow(() -> new FeatureNotFoundException("Feature not found!"));
-        var client = clientRepository.findByAccountId(accountId);
 
-        if(feature.getEnableType() == EnableType.PER_ACCOUNT && feature.getClients().contains(client)){
-            return feature.getStatus();
+        if(!feature.getStatus()) {
+            return false;
         }
-        else if (feature.getEnableType() == EnableType.ALL) {
-            return feature.getStatus();
+
+        if(feature.getEnableType() == EnableType.ALL){
+            return true;
+        }
+
+        if(feature.getEnableType() == EnableType.PER_ACCOUNT && isFeatureEnabledForAccount(feature, accountId)){
+            return true;
         }
 
         return false;
+        //        var client = clientRepository.findByAccountId(accountId);
+//
+//        if(feature.getEnableType() == EnableType.PER_ACCOUNT && feature.getClients().contains(client)){
+//            return feature.getStatus();
+//        }
+//        else if (feature.getEnableType() == EnableType.ALL) {
+//            return feature.getStatus();
+//        }
+//
+//        return false;
+    }
+
+    private boolean isFeatureEnabledForAccount(Feature feature,String accountId){
+        return feature.getClients()
+                .stream()
+                .anyMatch(client -> client.getAccountId().equals(accountId));
     }
 
     public Set<Client> getAllFeatureClients(UUID id){
-        var feature = featureRepository.findById(id).get();
-        Set<Client> clients = feature.getClients();
-        return clients;
+        return featureRepository.findById(id)
+                .map(Feature::getClients)
+                .orElse(Collections.emptySet());
+//        var feature = featureRepository.findById(id).get();
+//        Set<Client> clients = feature.getClients();
+//        return clients;
     }
 
     @Scheduled(fixedRate = 40000)
     public void checkReleaseDate(){
-        Date today = new Date();
-        List<Release> releases = releaseRepository.findAll();
+        var today = new Date();
+        var releases = releaseRepository.findAll();
 
         List<Feature> featuresToUpdate = new ArrayList<>();
 
