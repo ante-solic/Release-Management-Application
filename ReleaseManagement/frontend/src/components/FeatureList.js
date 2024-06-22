@@ -2,6 +2,7 @@ import React, { Component, useEffect, useState } from 'react';
 import '../App.css';
 import axios from "axios";
 import {Link, useNavigate, useParams} from "react-router-dom"
+import { jwtDecode } from "jwt-decode";
 
 
 export default function FeatureList() {
@@ -13,7 +14,9 @@ export default function FeatureList() {
     const [sortDir, setSortDir] = useState('asc');
     const [filter, setFilter] = useState('');
     const [totalPages, setTotalPages] = useState(0);
-    const {id} = useParams() 
+    const {id} = useParams();
+    const [isAdmin, setIsAdmin] = useState(false); 
+    const [isDeveloper, setIsDeveloper] = useState(false); 
 
     useEffect(()=>{
         const token = localStorage.getItem('jwtToken');
@@ -21,7 +24,14 @@ export default function FeatureList() {
     
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
+            const decodedToken = jwtDecode(token);
+            const rolesFromToken = decodedToken.authorities ? decodedToken.authorities.split(',') : [];
+            if (rolesFromToken.includes('ROLE_ADMIN')) {
+                setIsAdmin(true);
+            }
+            if (rolesFromToken.includes('ROLE_DEVELOPER')) {
+                setIsDeveloper(true);
+            }
         }
         loadFeatures();
     },[page, size, sortBy, sortDir, filter]);
@@ -110,8 +120,18 @@ export default function FeatureList() {
                                 </td>
                                 <td>
                                     <Link className='btn btn-primary mx-2' to={`/feature/view/${feature.id}`}>View</Link>
+                                    {isAdmin && (
+                                    <>
                                     <Link className='btn btn-outline-primary mx-2' to={`/feature/edit/${feature.id}`}>Edit</Link>
                                     <button className='btn btn-danger mx-2' onClick={ () => deleteFeature(feature.id) } >Delete</button>
+                                    </>
+                                    )}
+                                    {isDeveloper && (
+                                    <>
+                                    <Link className='btn btn-outline-primary mx-2' to={`/feature/edit/${feature.id}`}>Edit</Link>
+                                    <button className='btn btn-danger mx-2' onClick={ () => deleteFeature(feature.id) } >Delete</button>
+                                    </>
+                                    )}
                                 </td>
                                 </tr>
                             ))

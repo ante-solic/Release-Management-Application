@@ -56,4 +56,19 @@ public class JwtProvider {
             return null;
         }
     }
+
+    @SuppressWarnings("deprecation")
+    public static String getRoleFromJwtToken(String jwt) {
+        jwt = jwt.substring(7);
+        try {
+            Claims claims = Jwts.parser().setSigningKey(key).build().parseClaimsJws(jwt).getBody();
+            String role = String.valueOf(claims.get("authorities"));
+            System.out.println("Role extracted from JWT: " + claims);
+            return role;
+        } catch (Exception e) {
+            System.err.println("Error extracting role from JWT: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/find/all")
-    @PreAuthorize("hasRole('ROLE_PROJECT_MANAGER')")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_MANAGER', 'ROLE_ADMIN')")
     public Page<User> findAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -53,6 +53,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<String> deleteUser(@PathVariable UUID id) throws UserNotFoundException{
         userService.deleteUser(id);
         return new ResponseEntity<>("Deleted", HttpStatus.OK);

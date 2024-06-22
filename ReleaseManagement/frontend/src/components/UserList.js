@@ -2,6 +2,7 @@ import React, { Component, useEffect, useState } from 'react';
 import '../App.css';
 import axios from "axios";
 import {Link, useNavigate, useParams} from "react-router-dom"
+import { jwtDecode } from "jwt-decode";
 
 export default function UserList() {
     const [users,setUsers]=useState([])
@@ -11,7 +12,8 @@ export default function UserList() {
     const [sortDir, setSortDir] = useState('asc');
     const [filter, setFilter] = useState('');
     const [totalPages, setTotalPages] = useState(0);
-    const {id} = useParams() 
+    const {id} = useParams()
+    const [isAdmin, setIsAdmin] = useState(false); 
 
     useEffect(()=>{
         const token = localStorage.getItem('jwtToken');
@@ -19,8 +21,13 @@ export default function UserList() {
     
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
+            const decodedToken = jwtDecode(token);
+            const rolesFromToken = decodedToken.authorities ? decodedToken.authorities.split(',') : [];
+            if (rolesFromToken.includes('ROLE_ADMIN')) {
+                setIsAdmin(true);
+            }
         }
+
         loadUsers();
     },[page, size, sortBy, sortDir, filter]);
 
@@ -109,7 +116,9 @@ export default function UserList() {
                                 <td>
                                     <Link className='btn btn-primary mx-2' to={`/user/view/${user.id}`}>View</Link>
                                     <Link className='btn btn-outline-primary mx-2' to={`/user/edit/${user.id}`}>Edit</Link>
-                                    <button className='btn btn-danger mx-2' onClick={ () => deleteUser(user.id) } >Delete</button>
+                                    {isAdmin && (
+                                        <button className='btn btn-danger mx-2' onClick={() => deleteUser(user.id)}>Delete</button>
+                                    )}
                                 </td>
                                 </tr>
                             ))

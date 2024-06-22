@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link , useParams} from 'react-router-dom'
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 export default function Feature() {
 
@@ -13,7 +14,8 @@ export default function Feature() {
   })
 
   const [clients, setClients] = useState([]);
-
+  const [isAdmin, setIsAdmin] = useState(false); 
+  const [isProjectManager, setIsProjectManager] = useState(false); 
   const {id} = useParams()
 
   useEffect(() => {
@@ -21,8 +23,15 @@ export default function Feature() {
     console.log('Token from local storage:', token);
 
     if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      const decodedToken = jwtDecode(token);
+      const rolesFromToken = decodedToken.authorities ? decodedToken.authorities.split(',') : [];
+      if (rolesFromToken.includes('ROLE_ADMIN')) {
+          setIsAdmin(true);
+      }
+      if (rolesFromToken.includes('ROLE_PROJECT_MANAGER')) {
+          setIsProjectManager(true);
+      }
     }
     loadFeature();
     loadClients();
@@ -84,16 +93,28 @@ export default function Feature() {
                         {clients.map((client, index) => (
                           <div key={index} style={{ marginBottom: '0.5rem' }}>
                             <span>{client.accountId}</span>
+                            {isAdmin && (
                             <button className="btn btn-sm btn-danger ms-2" onClick={() => handleUnassign(client.id)}>
                               Unassign
                             </button>
+                            )}
+                            {isProjectManager && (
+                            <button className="btn btn-sm btn-danger ms-2" onClick={() => handleUnassign(client.id)}>
+                              Unassign
+                            </button>
+                            )}
                           </div>
                         ))}
                     </li>
                   </ul>
                 </div>
               </div>
-              <Link className='btn btn-primary my-2 mx-2' to={`/client/assign/${id}`}>Assign Client</Link>
+              {isAdmin && (
+                <Link className='btn btn-primary my-2 mx-2' to={`/client/assign/${id}`}>Assign Client</Link>
+              )}
+              {isProjectManager && (
+                <Link className='btn btn-primary my-2 mx-2' to={`/client/assign/${id}`}>Assign Client</Link>
+              )}
               <Link className='btn btn-primary my-2 mx-2' to={"/feature/view/all"}>Back to Feature List</Link>
         </div>
       </div>

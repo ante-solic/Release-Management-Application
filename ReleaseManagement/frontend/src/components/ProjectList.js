@@ -2,7 +2,7 @@ import React, { Component, useEffect, useState } from 'react';
 import '../App.css';
 import axios from "axios";
 import {Link, useNavigate, useParams} from "react-router-dom"
-
+import { jwtDecode } from "jwt-decode";
 
 export default function ProjectList() {
 
@@ -13,7 +13,10 @@ export default function ProjectList() {
     const [sortDir, setSortDir] = useState('asc');
     const [filter, setFilter] = useState('');
     const [totalPages, setTotalPages] = useState(0);
-    const {id} = useParams() 
+    const {id} = useParams();
+    const [isAdmin, setIsAdmin] = useState(false); 
+    const [isProjectManager, setIsProjectManager] = useState(false); 
+ 
 
     useEffect(()=>{
         const token = localStorage.getItem('jwtToken');
@@ -21,7 +24,14 @@ export default function ProjectList() {
     
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
+            const decodedToken = jwtDecode(token);
+            const rolesFromToken = decodedToken.authorities ? decodedToken.authorities.split(',') : [];
+            if (rolesFromToken.includes('ROLE_ADMIN')) {
+                setIsAdmin(true);
+            }
+            if (rolesFromToken.includes('ROLE_PROJECT_MANAGER')) {
+                setIsProjectManager(true);
+            }
         }
         loadProjects();
     },[page, size, sortBy, sortDir, filter]);
@@ -51,7 +61,12 @@ export default function ProjectList() {
 
     return (
         <div className='container'>
-            <Link className='btn btn-primary my-2' to="/project/create">Add Project</Link>
+            {isAdmin && (
+                <Link className='btn btn-primary my-2' to="/project/create">Add Project</Link>
+            )}
+            {isProjectManager && (
+                <Link className='btn btn-primary my-2' to="/project/create">Add Project</Link>
+            )}
             <div className='py-4'>
             <div className='d-flex justify-content-between mb-3'>
                     <input
@@ -102,8 +117,18 @@ export default function ProjectList() {
                                 <td>{project.name}</td>
                                 <td>
                                     <Link className='btn btn-primary mx-2' to={`/project/view/${project.id}`}>View</Link>
-                                    <Link className='btn btn-outline-primary mx-2' to={`/project/edit/${project.id}`}>Edit</Link>
-                                    <button className='btn btn-danger mx-2' onClick={ () => deleteProject(project.id) } >Delete</button>
+                                    {isProjectManager && (
+                                        <Link className='btn btn-outline-primary mx-2' to={`/project/edit/${project.id}`}>Edit</Link>
+                                    )}
+                                    {isProjectManager && (
+                                        <button className='btn btn-danger mx-2' onClick={ () => deleteProject(project.id) } >Delete</button>
+                                    )}
+                                    {isAdmin && (
+                                        <Link className='btn btn-outline-primary mx-2' to={`/project/edit/${project.id}`}>Edit</Link>
+                                    )}
+                                    {isAdmin && (
+                                        <button className='btn btn-danger mx-2' onClick={ () => deleteProject(project.id) } >Delete</button>
+                                    )}
                                 </td>
                                 </tr>
                             ))

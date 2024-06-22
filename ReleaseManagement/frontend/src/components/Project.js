@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Link , useParams} from 'react-router-dom'
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 export default function User() {
 
   const [project,setProject]=useState({
-    mame:""
+    name:""
   })
-
+  const [isAdmin, setIsAdmin] = useState(false); 
+  const [isReleaseManager, setIsReleaseManager] = useState(false); 
   const {id} = useParams()
 
   useEffect(() => {
@@ -15,9 +17,16 @@ export default function User() {
     console.log('Token from local storage:', token);
 
     if (token) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
-    }
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      const decodedToken = jwtDecode(token);
+      const rolesFromToken = decodedToken.authorities ? decodedToken.authorities.split(',') : [];
+      if (rolesFromToken.includes('ROLE_ADMIN')) {
+          setIsAdmin(true);
+      }
+      if (rolesFromToken.includes('ROLE_RELEASE_MANAGER')) {
+          setIsReleaseManager(true);
+      }
+  }
     loadProject()
   },[]);
 
@@ -42,7 +51,12 @@ export default function User() {
                   </ul>
                 </div>
               </div>
-              <Link className='btn btn-outline-primary my-2' to={`/release/create/${id}`}>Add Release</Link>
+              {isAdmin && (
+                <Link className='btn btn-outline-primary my-2' to={`/release/create/${id}`}>Add Release</Link>
+              )}
+              {isReleaseManager && (
+                <Link className='btn btn-outline-primary my-2' to={`/release/create/${id}`}>Add Release</Link>
+              )}
               <Link className='btn btn-primary my-2 mx-2' to={"/project/view/all"}>Back to Project List</Link>
         </div>
       </div>

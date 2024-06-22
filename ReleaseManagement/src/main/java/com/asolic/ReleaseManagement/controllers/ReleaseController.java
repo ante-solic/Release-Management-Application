@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class ReleaseController {
     private ReleaseService releaseService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ROLE_RELEASE_MANAGER', 'ROLE_ADMIN')")
     public ResponseEntity<String> createRelease(@RequestBody ReleaseDto releaseDto){
         releaseService.createRelease(releaseDto);
         return new ResponseEntity<>("Success", HttpStatus.OK);
@@ -46,11 +48,13 @@ public class ReleaseController {
     }
 
     @PutMapping("/update/{releaseId}")
+    @PreAuthorize("hasAnyRole('ROLE_RELEASE_MANAGER', 'ROLE_ADMIN')")
     public Release updateRelease(@RequestBody ReleaseDto updatedReleaseDto, @PathVariable UUID releaseId) throws ReleaseNotFoundException{
         return releaseService.updateRelease(updatedReleaseDto, releaseId);
     }
 
     @DeleteMapping("/delete/{releaseId}")
+    @PreAuthorize("hasAnyRole('ROLE_RELEASE_MANAGER', 'ROLE_ADMIN')")
     public ResponseEntity<String> deleteRelease(@PathVariable UUID releaseId) throws ReleaseNotFoundException{
         releaseService.deleteReleaseById(releaseId);
         return new ResponseEntity<>("Deleted", HttpStatus.OK);

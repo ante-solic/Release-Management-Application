@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class ProjectController {
     private ProjectService projectService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_MANAGER', 'ROLE_ADMIN')")
     public ResponseEntity<String> createProject(@RequestBody ProjectDto projectDto){
         projectService.createProject(projectDto);
         return new ResponseEntity<>("Success", HttpStatus.OK);
@@ -46,11 +48,13 @@ public class ProjectController {
     }
 
     @PutMapping("/update/{projectId}")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_MANAGER', 'ROLE_ADMIN')")
     public Project updateProject(@RequestBody ProjectDto updatedProjectDto, @PathVariable UUID projectId){
         return projectService.updateProject(updatedProjectDto, projectId);
     }
 
     @DeleteMapping("/delete/{projectId}")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_MANAGER', 'ROLE_ADMIN')")
     public ResponseEntity<String> deleteProject(@PathVariable UUID projectId) throws ProjectNotFoundException{
         projectService.deleteById(projectId);
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
