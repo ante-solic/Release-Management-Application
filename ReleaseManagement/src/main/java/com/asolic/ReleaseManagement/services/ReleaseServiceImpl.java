@@ -8,6 +8,8 @@ import com.asolic.ReleaseManagement.models.Release;
 import com.asolic.ReleaseManagement.repositories.ReleaseRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.lang.module.ResolutionException;
@@ -30,14 +32,13 @@ public class ReleaseServiceImpl implements ReleaseService{
         return releaseRepository.findById(id).orElseThrow(() -> new ReleaseNotFoundException("Release not found!"));
     }
 
-    public List<Release> findAllReleases() throws ReleaseNotFoundException{
-        var releases = releaseRepository.findAll();
+    public Page<Release> findAllReleases(Pageable pageable, String filter){
 
-        if(releases.isEmpty()){
-            throw new ReleaseNotFoundException("No releases found!");
+        if (filter != null && !filter.isEmpty()) {
+            return releaseRepository.findByNameContaining(filter, pageable);
         }
 
-        return releases;
+        return releaseRepository.findAll(pageable);
     }
 
     public Release updateRelease(ReleaseDto updatedReleaseDto, UUID releaseId) throws ReleaseNotFoundException{

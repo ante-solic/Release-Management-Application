@@ -57,7 +57,7 @@ export default function User() {
                   </ul>
                 </div>
               </div>
-              <Link className='btn btn-primary my-2' to={"/"}>Back to User List</Link>
+              <Link className='btn btn-primary my-2' to={"/user/view/all"}>Back to User List</Link>
         </div>
       </div>
     </div>

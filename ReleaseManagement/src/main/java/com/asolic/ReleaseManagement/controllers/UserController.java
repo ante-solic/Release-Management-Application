@@ -5,6 +5,10 @@ import com.asolic.ReleaseManagement.exceptions.UserNotFoundException;
 import com.asolic.ReleaseManagement.models.User;
 import com.asolic.ReleaseManagement.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,8 +37,14 @@ public class UserController {
 
     @GetMapping("/find/all")
     @PreAuthorize("hasRole('ROLE_PROJECT_MANAGER')")
-    public List<User> findAllUsers() throws UserNotFoundException{
-        return userService.findAllUsers();
+    public Page<User> findAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(required = false) String filter) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+        return userService.findAllUsers(pageable, filter);
     }
 
     @PutMapping("/update/{id}")

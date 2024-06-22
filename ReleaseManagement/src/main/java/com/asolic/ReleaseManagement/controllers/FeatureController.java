@@ -6,6 +6,10 @@ import com.asolic.ReleaseManagement.models.Client;
 import com.asolic.ReleaseManagement.models.Feature;
 import com.asolic.ReleaseManagement.services.FeatureService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
@@ -38,8 +42,14 @@ public class FeatureController {
     }
 
     @GetMapping("/find/all")
-    public List<Feature> getAllFeatures() throws FeatureNotFoundException{
-        return featureService.getAllFeatures();
+    public Page<Feature> getAllFeatures(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(required = false) String filter) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+        return featureService.getAllFeatures(pageable, filter);
     }
 
     @PutMapping("/update/{id}")

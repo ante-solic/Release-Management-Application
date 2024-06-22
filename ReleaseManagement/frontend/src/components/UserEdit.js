@@ -38,7 +38,7 @@ export default function UserEdit() {
     const onSubmit=async (e)=>{
         e.preventDefault();
         await axios.put(`/user/update/${id}`,user)
-        navigate("/")
+        navigate("/user/view/all")
     }
 
     const loadUser = async ()=>{
@@ -73,7 +73,7 @@ export default function UserEdit() {
                     <input type={"text"}  className='form-control' placeholder='Enter lastname' name="lastname" value={lastname} onChange={(e)=>onInputChange(e)}></input>
                 </div>
                 <button type='submit' className='btn btn-outline-primary'>Submit</button>
-                <Link className='btn btn-outline-danger mx-2' to="/">Cancel</Link>
+                <Link className='btn btn-outline-danger mx-2' to="/user/view/all">Cancel</Link>
                 </form>
             </div>
         </div>

@@ -36,7 +36,7 @@ function App() {
         <Route path="/signup" element={<SignupPage></SignupPage>}/>
         <Route path="/login" element={<LoginPage></LoginPage>}/>
 
-        <Route exact path="/" element={<Home></Home>}/>
+        <Route exact path="/user/view/all" element={<UserList></UserList>}/>
         <Route exact path="/user/add" element={<UserAdd></UserAdd>}/>
         <Route exact path="/user/edit/:id" element={<UserEdit></UserEdit>}/>
         <Route exact path="/user/view/:id" element={<User></User>}/>

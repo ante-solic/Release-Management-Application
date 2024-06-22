@@ -11,6 +11,8 @@ import com.asolic.ReleaseManagement.repositories.ClientRepository;
 import com.asolic.ReleaseManagement.repositories.FeatureRepository;
 import com.asolic.ReleaseManagement.repositories.ReleaseRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -38,14 +40,13 @@ public class FeatureServiceImpl implements FeatureService{
         return featureDto;
     }
 
-    public List<Feature> getAllFeatures() throws FeatureNotFoundException{
-        var features = featureRepository.findAll();
+    public Page<Feature> getAllFeatures(Pageable pageable, String filter){
 
-        if(features.isEmpty()){
-            throw new FeatureNotFoundException("No features found!");
+        if (filter != null && !filter.isEmpty()) {
+            return featureRepository.findByNameContaining(filter, pageable);
         }
 
-        return features;
+        return featureRepository.findAll(pageable);
     }
 
     public Feature updateFeature(FeatureDto updatedFeatureDto, UUID featureId) throws FeatureNotFoundException{

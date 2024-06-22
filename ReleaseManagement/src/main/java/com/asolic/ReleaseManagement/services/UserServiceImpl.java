@@ -8,6 +8,8 @@ import com.asolic.ReleaseManagement.models.User;
 import com.asolic.ReleaseManagement.repositories.RoleRepository;
 import com.asolic.ReleaseManagement.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,14 +38,12 @@ public class UserServiceImpl implements UserService{
         return user;
     }
 
-    public List<User> findAllUsers() throws UserNotFoundException{
-        var users = userRepository.findAll();
-
-        if(users.isEmpty()){
-            throw new UserNotFoundException("No users found!");
+    public Page<User> findAllUsers(Pageable pageable, String filter){
+        if (filter != null && !filter.isEmpty()) {
+            return userRepository.findByUsernameContaining(filter, pageable);
         }
 
-        return users;
+        return userRepository.findAll(pageable);
     }
 
     public User updateUser(UserDto updateUserDto, UUID userId) throws UserNotFoundException {

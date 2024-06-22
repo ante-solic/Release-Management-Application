@@ -7,6 +7,8 @@ import com.asolic.ReleaseManagement.models.Project;
 import com.asolic.ReleaseManagement.repositories.ProjectRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,14 +33,12 @@ public class ProjectServiceImpl implements ProjectService{
         return projectRepository.findByName(name).orElseThrow(() -> new ProjectNotFoundException("Project Not Found"));
     }
 
-    public List<Project> findAllProjects() throws ProjectNotFoundException {
-        var projects = projectRepository.findAll();
-
-        if (projects.isEmpty()) {
-            throw new ProjectNotFoundException("Project Not Found");
+    public Page<Project> findAllProjects(Pageable pageable, String filter){
+        if (filter != null && !filter.isEmpty()) {
+            return projectRepository.findByNameContaining(filter, pageable);
         }
 
-        return projects;
+        return projectRepository.findAll(pageable);
     }
 
     public Project updateProject(ProjectDto updatedProjectDto, UUID projectId){
