@@ -62,7 +62,7 @@ public class SecurityConfig{
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeRequests(
                         authorize -> authorize
-                                .requestMatchers("/user/**", "/project/**").authenticated()
+                                .requestMatchers("/user/**", "/project/**","/release/**","/feature/**","/client/**").authenticated()
                                 .anyRequest().permitAll())
                 .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
                 .csrf(csrf -> csrf.disable())

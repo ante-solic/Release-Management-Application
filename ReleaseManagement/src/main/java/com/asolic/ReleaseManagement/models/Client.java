@@ -16,4 +16,6 @@ public class Client {
 
     @Column(name="account_id")
     private String accountId;
+
+    private String name;
 }

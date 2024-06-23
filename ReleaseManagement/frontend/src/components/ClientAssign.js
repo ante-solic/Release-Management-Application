@@ -50,7 +50,7 @@ export default function ClientAssign() {
                         {
                             clients.map((client) => (
                                 <option key={client.accountId} value={client.id}>
-                                    {client.accountId || client}
+                                    {client.name || client}
                                 </option>
                             ))
                         }

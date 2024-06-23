@@ -27,7 +27,7 @@ export default function ClientList() {
     };
 
     const deleteClient=async (id)=>{
-        await axios.delete(`/client/delete/${id}`)
+        await axios.delete(`/client/${id}`)
         loadClients()
     }
 
@@ -39,6 +39,7 @@ export default function ClientList() {
                     <thead>
                         <tr>
                         <th scope="col">#</th>
+                        <th scope="col">Account Name</th>
                         <th scope="col">Account ID</th>
                         <th scope="col">Action</th>
                         </tr>
@@ -48,6 +49,7 @@ export default function ClientList() {
                             clients.map((client,index)=>(
                                 <tr>
                                 <th scope="row" key={index}>{index+1}</th>
+                                <td>{client.name}</td>
                                 <td>{client.accountId}</td>
                                 <td>
                                     <button className='btn btn-danger mx-2' onClick={ () => deleteClient(client.id) } >Delete</button>

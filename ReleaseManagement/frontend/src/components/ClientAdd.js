@@ -8,9 +8,10 @@ export default function ClientAdd() {
 
     const [client, setClient] = useState({
         accountId:"",
-    })
+        name:""
+    });
 
-    const{accountId} = client
+    const{accountId, name} = client
 
     useEffect(() => {
         const token = localStorage.getItem('jwtToken');
@@ -27,6 +28,7 @@ export default function ClientAdd() {
 
     const onSubmit=async (e)=>{
         e.preventDefault();
+        console.log("Submitting client:", client);
         await axios.post("/client/", client)
         navigate("/client/view/all")
     }
@@ -38,6 +40,8 @@ export default function ClientAdd() {
                 <h2 className='text-center m-4'>Add Client</h2>
                 <form onSubmit={(e)=>onSubmit(e)}>
                 <div className='mb-3'>
+                    <label htmlFor='name' className='form-label'>Account Name</label>
+                    <input type="text" className='form-control' placeholder='Enter account name' name="name" value={name} onChange={(e) => onInputChange(e)}></input>
                     <label htmlFor='accountId' className='form-label'>Account ID</label>
                     <input type={"text"}  className='form-control' placeholder='Enter account id' name="accountId"  value={accountId} onChange={(e)=>onInputChange(e)}></input>
                 </div>

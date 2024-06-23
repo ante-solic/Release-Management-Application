@@ -1,0 +1,2 @@
+ALTER TABLE Clients
+ADD COLUMN name VARCHAR(255);

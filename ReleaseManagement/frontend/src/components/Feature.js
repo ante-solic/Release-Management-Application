@@ -92,7 +92,7 @@ export default function Feature() {
                       <b>Clients: </b>
                         {clients.map((client, index) => (
                           <div key={index} style={{ marginBottom: '0.5rem' }}>
-                            <span>{client.accountId}</span>
+                            <span>{client.name}</span>
                             {isAdmin && (
                             <button className="btn btn-sm btn-danger ms-2" onClick={() => handleUnassign(client.id)}>
                               Unassign

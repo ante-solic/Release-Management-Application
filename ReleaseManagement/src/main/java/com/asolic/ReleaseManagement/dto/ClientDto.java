@@ -8,4 +8,5 @@ import java.util.UUID;
 public class ClientDto {
     private UUID id;
     private String accountId;
+    private String name;
 }

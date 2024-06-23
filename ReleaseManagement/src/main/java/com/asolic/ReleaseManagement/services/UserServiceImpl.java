@@ -38,6 +38,11 @@ public class UserServiceImpl implements UserService{
         return user;
     }
 
+    public User findUserByUsername(String username) throws UserNotFoundException{
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found!"));
+        return user;
+    }
+
     public Page<User> findAllUsers(Pageable pageable, String filter){
         if (filter != null && !filter.isEmpty()) {
             return userRepository.findByUsernameContaining(filter, pageable);

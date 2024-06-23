@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from 'react'
 import axios from "axios"
 import {Link, useNavigate} from "react-router-dom"
+import { jwtDecode } from "jwt-decode";
 
 export default function ProjectAdd() {
 
     let navigate = useNavigate()
 
     const [project,setProject] = useState({
-        name:""
+        name:"",
+        username:""
     })
 
-    const{name} = project
+    const{name, username} = project
     
     useEffect(() => {
         const token = localStorage.getItem('jwtToken');
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            const decodedToken = jwtDecode(token);
+            const username = decodedToken.username;
+            setProject(prevProject => ({ ...prevProject, username }));
         }
-    }, [])
+    }, []);
 
     const onInputChange=(e)=>{
 

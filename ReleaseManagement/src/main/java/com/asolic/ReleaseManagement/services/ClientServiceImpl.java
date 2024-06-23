@@ -22,7 +22,7 @@ public class ClientServiceImpl implements ClientService {
 
     public void createClient(ClientDto clientDto){
         var client = clientMapper.toEntity(clientDto);
-
+        client.setName(clientDto.getName());
         clientRepository.save(client);
     }
 

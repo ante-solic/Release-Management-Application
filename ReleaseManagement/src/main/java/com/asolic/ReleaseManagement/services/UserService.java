@@ -15,6 +15,8 @@ public interface UserService{
 
     User findUser(UUID id) throws UserNotFoundException;
 
+    User findUserByUsername(String username) throws UserNotFoundException;
+
     Page<User> findAllUsers(Pageable pageable, String filter);
 
     User updateUser(UserDto updatedUserDto, UUID userId) throws UserNotFoundException;
