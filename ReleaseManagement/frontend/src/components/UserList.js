@@ -5,6 +5,9 @@ import {Link, useNavigate, useParams} from "react-router-dom"
 import { jwtDecode } from "jwt-decode";
 
 export default function UserList() {
+    let navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
+
     const [users,setUsers]=useState([])
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(3);
@@ -26,11 +29,17 @@ export default function UserList() {
             if (rolesFromToken.includes('ROLE_ADMIN')) {
                 setIsAdmin(true);
             }
+        } else {
+            setIsAuthenticated(false);
         }
 
         loadUsers();
     },[page, size, sortBy, sortDir, filter]);
 
+    if (!isAuthenticated) {
+        navigate("/login")
+    }
+    
     const loadUsers=async()=>{
         const result = await axios.get("/user/find/all", {
             params: {

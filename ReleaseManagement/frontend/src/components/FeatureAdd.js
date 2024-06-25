@@ -5,6 +5,7 @@ import {Link, useNavigate, useParams } from "react-router-dom"
 export default function FeatureAdd() {
 
     let navigate = useNavigate()
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
 
     const {id} = useParams()
 
@@ -23,9 +24,15 @@ export default function FeatureAdd() {
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
+        } else {
+            setIsAuthenticated(false);
         }
         loadRelease();
     }, []);
+
+    if (!isAuthenticated) {
+        navigate("/login")
+    }
 
     const loadRelease = async ()=> {
         const result = await axios.get(`/release/${id}`);

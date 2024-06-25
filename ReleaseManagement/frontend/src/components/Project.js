@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Link , useParams} from 'react-router-dom'
+import { Link , useParams, useNavigate } from 'react-router-dom'
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 export default function User() {
+  let navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const [project,setProject]=useState({
     name:""
@@ -26,9 +28,15 @@ export default function User() {
       if (rolesFromToken.includes('ROLE_RELEASE_MANAGER')) {
           setIsReleaseManager(true);
       }
-  }
+    } else {
+      setIsAuthenticated(false);
+    }
     loadProject()
   },[]);
+
+  if (!isAuthenticated) {
+    navigate("/login")
+  }
 
   const loadProject = async ()=>{
     const result = await axios.get(`/project/${id}`)

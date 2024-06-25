@@ -5,10 +5,8 @@ import {Link, useNavigate, useParams} from "react-router-dom"
 
 
 export default function Home() {
-
-    const [users,setUsers]=useState([])
-
-    const {id} = useParams() 
+    let navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
 
     useEffect(()=>{
         const token = localStorage.getItem('jwtToken');
@@ -17,54 +15,41 @@ export default function Home() {
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
+        } else {
+            setIsAuthenticated(false);
         }
-        loadUsers();
     },[]);
 
-    const loadUsers=async()=>{
-        const result = await axios.get("/user/find/all");
-        setUsers(result.data);
-    };
-
-    const deleteUser=async (id)=>{
-        await axios.delete(`/user/delete/${id}`)
-        loadUsers()
+    if (!isAuthenticated) {
+        navigate("/login")
     }
 
     return (
-        <div className='container'>
-            <div className='py-4'>
-                <table className="table border shadow">
-                    <thead>
-                        <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">E-mail</th>
-                        <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
-                        <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            users.map((user,index)=>(
-                                <tr>
-                                <th scope="row" key={index}>{index+1}</th>
-                                <td>{user.username}</td>
-                                <td>{user.email}</td>
-                                <td>{user.firstname}</td>
-                                <td>{user.lastname}</td>
-                                <td>
-                                    <Link className='btn btn-primary mx-2' to={`/user/view/${user.id}`}>View</Link>
-                                    <Link className='btn btn-outline-primary mx-2' to={`/user/edit/${user.id}`}>Edit</Link>
-                                    <button className='btn btn-danger mx-2' onClick={ () => deleteUser(user.id) } >Delete</button>
-                                </td>
-                                </tr>
-                            ))
-                        }
-                    </tbody>
-                </table>
+        <div className="container">
+            <div className="welcome">
+                <h1>Welcome to the App!</h1>
+                <p>Use the sections below to navigate through the application.</p>
+                <div className="card-group">
+                    <Link className="card project" to="/project/view/all">
+                        <div className="card-content">
+                            <h2>Projects</h2>
+                            <p>Manage your projects here</p>
+                        </div>
+                    </Link>
+                    <Link className="card feature" to="/feature/view/all">
+                        <div className="card-content">
+                            <h2>Features</h2>
+                            <p>View and add features</p>
+                        </div>
+                    </Link>
+                    <Link className="card release" to="/release/view/all">
+                        <div className="card-content">
+                            <h2>Releases</h2>
+                            <p>Track release schedules</p>
+                        </div>
+                    </Link>
+                </div>
             </div>
         </div>
-    )
+    );
 }

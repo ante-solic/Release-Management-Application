@@ -29,7 +29,7 @@ function LoginPage() {
 
             localStorage.setItem('jwtToken', token);
 
-            history('/'); 
+            history('/home'); 
             
         } catch (error) { 
             console.error('Login failed:', error.response ? error.response.data : error.message); 

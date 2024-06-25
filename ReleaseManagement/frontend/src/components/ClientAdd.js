@@ -5,6 +5,7 @@ import {Link, useNavigate, useParams } from "react-router-dom"
 export default function ClientAdd() {
 
     let navigate = useNavigate()
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
 
     const [client, setClient] = useState({
         accountId:"",
@@ -17,8 +18,14 @@ export default function ClientAdd() {
         const token = localStorage.getItem('jwtToken');
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        } else {
+            setIsAuthenticated(false);
         }
     }, [])
+
+    if (!isAuthenticated) {
+        navigate("/login")
+    }
 
     const onInputChange=(e)=>{
 

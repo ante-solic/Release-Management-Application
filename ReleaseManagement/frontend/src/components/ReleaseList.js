@@ -6,6 +6,8 @@ import { jwtDecode } from "jwt-decode";
 
 
 export default function ReleaseList() {
+    let navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
 
     const [releases,setReleases]=useState([])
     const [page, setPage] = useState(0);
@@ -32,9 +34,15 @@ export default function ReleaseList() {
             if (rolesFromToken.includes('ROLE_RELEASE_MANAGER')) {
                 setIsReleaseManager(true);
             }
+        } else {
+            setIsAuthenticated(false);
         }
         loadReleases();
     },[page, size, sortBy, sortDir, filter]);
+
+    if (!isAuthenticated) {
+        navigate("/login")
+    }
 
     const loadReleases=async()=>{
         const result = await axios.get("/release/find/all", {

@@ -5,6 +5,8 @@ import {Link, useNavigate, useParams} from "react-router-dom"
 import { jwtDecode } from "jwt-decode";
 
 export default function ProjectList() {
+    let navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
 
     const [projects,setProjects]=useState([])
     const [page, setPage] = useState(0);
@@ -32,9 +34,15 @@ export default function ProjectList() {
             if (rolesFromToken.includes('ROLE_PROJECT_MANAGER')) {
                 setIsProjectManager(true);
             }
+        } else {
+            setIsAuthenticated(false);
         }
         loadProjects();
     },[page, size, sortBy, sortDir, filter]);
+
+    if (!isAuthenticated) {
+        navigate("/login")
+    }
 
     const loadProjects=async()=>{
         const result = await axios.get("/project/find/all", {

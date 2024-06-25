@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Link , useParams} from 'react-router-dom'
+import { Link , useParams, useNavigate } from 'react-router-dom'
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 export default function Feature() {
+  let navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const [feature,setFeature]=useState({
     mame:"",
@@ -32,10 +34,16 @@ export default function Feature() {
       if (rolesFromToken.includes('ROLE_PROJECT_MANAGER')) {
           setIsProjectManager(true);
       }
+    } else {
+      setIsAuthenticated(false);
     }
     loadFeature();
     loadClients();
   },[]);
+
+  if (!isAuthenticated) {
+    navigate("/login")
+  }
 
   const loadFeature = async ()=>{
     const result = await axios.get(`/feature/${id}`)

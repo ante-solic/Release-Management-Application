@@ -5,7 +5,8 @@ import {Link, useNavigate, useParams} from "react-router-dom"
 
 
 export default function ClientList() {
-
+    let navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
     const [clients,setClients]=useState([])
 
     const {id} = useParams() 
@@ -17,9 +18,15 @@ export default function ClientList() {
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
+        } else {
+            setIsAuthenticated(false);
         }
         loadClients();
     },[]);
+
+    if (!isAuthenticated) {
+        navigate("/login")
+    }
 
     const loadClients=async()=>{
         const result = await axios.get("/client/find/all");

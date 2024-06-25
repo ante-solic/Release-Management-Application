@@ -5,12 +5,23 @@ import {Link, useNavigate, useParams } from "react-router-dom"
 export default function ClientAssign() {
 
     let navigate = useNavigate()
-
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
+    
     const [clients, setClients] = useState([]);
 
     const {id} = useParams();
 
     useEffect(() => {
+        const token = localStorage.getItem('jwtToken');
+        console.log('Token from local storage:', token);
+
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
+        } else {
+            setIsAuthenticated(false);
+        }
+
         const fetchClients = async () => {
             try {
                 const response = await axios.get('/client/find/all');
@@ -23,6 +34,10 @@ export default function ClientAssign() {
         fetchClients();
     },[]);
     
+    if (!isAuthenticated) {
+        navigate("/login")
+    }
+
     const [client, setClient] = useState({});
 
     useEffect(() => {

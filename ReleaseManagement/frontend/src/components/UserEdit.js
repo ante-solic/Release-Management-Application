@@ -5,6 +5,7 @@ import {Link, useNavigate, useParams } from "react-router-dom"
 export default function UserEdit() {
 
     let navigate = useNavigate()
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
 
     const{id}=useParams()
 
@@ -31,9 +32,15 @@ export default function UserEdit() {
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
+        } else {
+            setIsAuthenticated(false);
         }
         loadUser();
     },[]);
+
+    if (!isAuthenticated) {
+        navigate("/login")
+    }
 
     const onSubmit=async (e)=>{
         e.preventDefault();

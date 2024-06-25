@@ -125,7 +125,7 @@ public class FeatureServiceImpl implements FeatureService{
 
         for(Release release: releases){
             if (release.getReleaseDate().before(today)){
-                System.out.println("Feature to update" + release.getName());
+                System.out.println("Feature to update: " + release.getName());
                 var features = featureRepository.findByRelease(release);
                 featuresToUpdate.addAll(features);
             }

@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode";
 export default function ProjectAdd() {
 
     let navigate = useNavigate()
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
 
     const [project,setProject] = useState({
         name:"",
@@ -21,8 +22,14 @@ export default function ProjectAdd() {
             const decodedToken = jwtDecode(token);
             const username = decodedToken.username;
             setProject(prevProject => ({ ...prevProject, username }));
+        } else {
+            setIsAuthenticated(false);
         }
     }, []);
+
+    if (!isAuthenticated) {
+        navigate("/login")
+    }
 
     const onInputChange=(e)=>{
 

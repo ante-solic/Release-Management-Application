@@ -33,6 +33,8 @@ function App() {
     <Router>
       <Navbar></Navbar>
       <Routes>
+        <Route path="/home" element={<Home></Home>}/>
+
         <Route path="/signup" element={<SignupPage></SignupPage>}/>
         <Route path="/login" element={<LoginPage></LoginPage>}/>
 

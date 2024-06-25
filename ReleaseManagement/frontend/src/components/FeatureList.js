@@ -7,6 +7,9 @@ import { jwtDecode } from "jwt-decode";
 
 export default function FeatureList() {
 
+    let navigate = useNavigate();
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
+
     const [features,setFeatures]=useState([])
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(3);
@@ -32,9 +35,15 @@ export default function FeatureList() {
             if (rolesFromToken.includes('ROLE_DEVELOPER')) {
                 setIsDeveloper(true);
             }
+        } else {
+            setIsAuthenticated(false);
         }
         loadFeatures();
     },[page, size, sortBy, sortDir, filter]);
+
+    if (!isAuthenticated) {
+        navigate("/login")
+    }
 
     const loadFeatures=async()=>{
         const result = await axios.get("/feature/find/all", {

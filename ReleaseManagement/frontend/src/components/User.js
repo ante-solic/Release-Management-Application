@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Link , useParams} from 'react-router-dom'
+import { Link , useParams, useNavigate } from 'react-router-dom'
 import axios from "axios";
 
 export default function User() {
+  let navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   const [user,setUser]=useState({
     username:"",
@@ -20,9 +22,15 @@ export default function User() {
     if (token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         console.log('Authorization header set:', axios.defaults.headers.common['Authorization']);
+    } else {
+      setIsAuthenticated(false);
     }
     loadUser()
   },[]);
+
+  if (!isAuthenticated) {
+    navigate("/login")
+  }
 
   const loadUser = async ()=>{
     const result = await axios.get(`/user/${id}`)
