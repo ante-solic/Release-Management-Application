@@ -101,10 +101,10 @@ The following is an example of how to test the feature flag capability of the Re
 ![image](./ReleaseManagementDatabaseGraph.png)
 ## Technologies
 <p align="center">
-	<img src="./Technologies/springboot.svg" alt="Spring Boot" width="100" style="display: inline">
-	<img src="./Technologies/springsecurity.svg" alt="Spring Security" width="100" style="display: inline">
-	<img src="./Technologies/react.svg" alt="React.js" width="100" style="display: inline">
+	<img src="./Technologies/springboot.png" alt="Spring Boot" width="100" style="display: inline">
+	<img src="./Technologies/springsecurity.png" alt="Spring Security" width="100" style="display: inline">
+	<img src="./Technologies/react.png" alt="React.js" width="100" style="display: inline">
 	<img src="./Technologies/postgre.png" alt="PostgreSQL" width="100" style="display: inline">
-	<img src="./Technologies/flyway.svg" alt="Flyway" width="100" style="display: inline">
-	<img src="./Technologies/apachemaven.svg" alt="Apache Maven" width="100" style="display: inline">
+	<img src="./Technologies/flyway.png" alt="Flyway" width="100" style="display: inline">
+	<img src="./Technologies/maven.png" alt="Apache Maven" width="100" style="display: inline">
 </p>
