@@ -100,9 +100,11 @@ The following is an example of how to test the feature flag capability of the Re
 ## Database
 ![image](./ReleaseManagementDatabaseGraph.png)
 ## Technologies
-![image](./Technologies/springboot.svg)
-![image](./Technologies/springsecurity.svg)
-![image](./Technologies/react.svg)
-![image](./Technologies/postgre.png)
-![image](./Technologies/flyway.svg)
-![image](./Technologies/apachemaven.svg)
+<p align="center">
+	<img src="./Technologies/springboot.svg" alt="Spring Boot" width="100" style="display: inline">
+	<img src="./Technologies/springsecurity.svg" alt="Spring Security" width="100" style="display: inline">
+	<img src="./Technologies/react.svg" alt="React.js" width="100" style="display: inline">
+	<img src="./Technologies/postgre.png" alt="PostgreSQL" width="100" style="display: inline">
+	<img src="./Technologies/flyway.svg" alt="Flyway" width="100" style="display: inline">
+	<img src="./Technologies/apachemaven.svg" alt="Apache Maven" width="100" style="display: inline">
+</p>
