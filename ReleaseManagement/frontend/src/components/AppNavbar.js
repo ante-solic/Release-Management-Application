@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from "jwt-decode";
+import axios from 'axios';
 
 export default function Navbar() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [roles, setRoles] = useState([]);
+    const [userName, setUserName] = useState('');
+    const [userId, setUserId] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -15,6 +18,9 @@ export default function Navbar() {
                 const decodedToken = jwtDecode(token);
                 const rolesFromToken = decodedToken.authorities ? decodedToken.authorities.split(',') : [];
                 setRoles(rolesFromToken);
+                setUserName(decodedToken.username); 
+
+                fetchUserId(decodedToken.username);
             } catch (error) {
                 console.error('Error decoding JWT:', error);
                 setIsLoggedIn(false);
@@ -25,6 +31,11 @@ export default function Navbar() {
             setRoles([]);
         }
     }, [localStorage.getItem('jwtToken')]);
+
+    const fetchUserId = async (userName) => {
+        const result = await axios.get(`/user/username/${userName}`)
+        setUserId(result.data.id)
+    };
 
     const handleLogout = () => {
         localStorage.removeItem('jwtToken');
@@ -72,9 +83,14 @@ export default function Navbar() {
                     </ul>
                     <ul className="navbar-nav ml-auto mb-2 mb-lg-0">
                         {isLoggedIn ? (
+                            <>
+                            <li className="nav-item">
+                                <Link className='btn btn-outline-light mx-2' to={`/user/edit/${userId}`}>Hi {userName}</Link>
+                            </li>
                             <li className="nav-item">
                                 <button className='btn btn-outline-light mx-2' onClick={handleLogout}>Logout</button>
                             </li>
+                            </>
                         ) : (
                             <li className="nav-item">
                                 <Link className='btn btn-outline-light' to="/login">Login</Link>

@@ -9,6 +9,9 @@ import UserEdit from './components/UserEdit';
 import Navbar from './components/AppNavbar';
 import UserAdd from './components/UserAdd';
 import User from './components/User';
+import UserAssignList from './components/UserAssignList';
+import UserAssign from './components/UserAssign';
+import UserEditRole from './components/UserEditRole';
 import ProjectList from './components/ProjectList';
 import ProjectEdit from './components/ProjectEdit';
 import Project from './components/Project';
@@ -42,6 +45,9 @@ function App() {
         <Route exact path="/user/add" element={<UserAdd></UserAdd>}/>
         <Route exact path="/user/edit/:id" element={<UserEdit></UserEdit>}/>
         <Route exact path="/user/view/:id" element={<User></User>}/>
+        <Route exact path="/user/assign/list/:id" element={<UserAssignList></UserAssignList>}/>
+        <Route exact path="/user/assign/:id" element={<UserAssign></UserAssign>}/>
+        <Route exact path="/user/edit/role/:id" element={<UserEditRole></UserEditRole>}/>
 
         <Route exact path="/project/view/all" element={<ProjectList></ProjectList>}/>
         <Route exact path="/project/edit/:id" element={<ProjectEdit></ProjectEdit>}/>

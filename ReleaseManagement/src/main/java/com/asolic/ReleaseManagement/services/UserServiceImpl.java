@@ -3,8 +3,10 @@ package com.asolic.ReleaseManagement.services;
 import com.asolic.ReleaseManagement.dto.UserDto;
 import com.asolic.ReleaseManagement.exceptions.UserNotFoundException;
 import com.asolic.ReleaseManagement.mappers.UserMapper;
+import com.asolic.ReleaseManagement.models.Project;
 import com.asolic.ReleaseManagement.models.Role;
 import com.asolic.ReleaseManagement.models.User;
+import com.asolic.ReleaseManagement.repositories.ProjectRepository;
 import com.asolic.ReleaseManagement.repositories.RoleRepository;
 import com.asolic.ReleaseManagement.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ProjectRepository projectRepository;
     private PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
@@ -52,12 +55,37 @@ public class UserServiceImpl implements UserService{
     }
 
     public User updateUser(UserDto updateUserDto, UUID userId) throws UserNotFoundException {
-        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not Found"));
-        updateUserDto.setId(userId);
+        var currentUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        var user = userMapper.toEntity(updateUserDto);
+        if (updateUserDto.getUsername() != null) {
+            currentUser.setUsername(updateUserDto.getUsername());
+        }
+        if (updateUserDto.getEmail() != null) {
+            currentUser.setEmail(updateUserDto.getEmail());
+        }
+        if (updateUserDto.getFirstname() != null) {
+            currentUser.setFirstname(updateUserDto.getFirstname());
+        }
+        if (updateUserDto.getLastname() != null) {
+            currentUser.setLastname(updateUserDto.getLastname());
+        }
+        if (updateUserDto.getPassword() != null && !updateUserDto.getPassword().isEmpty()) {
+            currentUser.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
+        }
 
-        return userRepository.save(user);
+        return userRepository.save(currentUser);
+    }
+
+    public void updateUserRole(UUID userId, UUID roleId) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        var role = roleRepository.findById(roleId).get();
+
+        user.getRoles().clear();
+        user.getRoles().add(role);
+        userRepository.save(user);
     }
 
     public void deleteUser(UUID userId) throws  UserNotFoundException{
@@ -86,5 +114,41 @@ public class UserServiceImpl implements UserService{
         createdUser.setRoles(roles);
 
         return userRepository.save(createdUser);
+    }
+
+    public Page<User> findAllAssignedUsers(Pageable pageable, String filter, UUID projectId){
+        if (filter != null && !filter.isEmpty()) {
+            return userRepository.findByUsernameContaining(filter, pageable);
+        }
+
+        return userRepository.findAllByProjectId(projectId, pageable);
+    }
+
+    public List<User> findAllUnassignedUsers(UUID projectId){
+        return userRepository.findAllNotInProject(projectId);
+    }
+
+    public void assignUser(UUID userId, UUID projectId){
+        var user = userRepository.findById(userId).get();
+
+        var project = projectRepository.findById(projectId).get();
+        Set<Project> projects = user.getProjects();
+        projects.add(project);
+
+        user.setProjects(projects);
+
+        userRepository.save(user);
+    }
+
+    public void unassignUser(UUID userId, UUID projectId){
+        var user = userRepository.findById(userId).get();
+
+        var project = projectRepository.findById(projectId).get();
+        Set<Project> projects = user.getProjects();
+        projects.remove(project);
+
+        user.setProjects(projects);
+
+        userRepository.save(user);
     }
 }

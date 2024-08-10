@@ -11,6 +11,7 @@ export default function User() {
     name:""
   })
   const [isAdmin, setIsAdmin] = useState(false); 
+  const [isProjectManager, setIsProjectManager] = useState(false); 
   const [isReleaseManager, setIsReleaseManager] = useState(false); 
   const {id} = useParams()
 
@@ -28,6 +29,9 @@ export default function User() {
       if (rolesFromToken.includes('ROLE_RELEASE_MANAGER')) {
           setIsReleaseManager(true);
       }
+      if (rolesFromToken.includes('ROLE_PROJECT_MANAGER')) {
+        setIsProjectManager(true);
+    }
     } else {
       setIsAuthenticated(false);
     }
@@ -55,6 +59,15 @@ export default function User() {
                     <li className='list-group-item'>
                       <b>Name: </b>
                         {project.name}
+                    </li>
+                    <li className='list-group-item'>
+                      <b>Users: </b>
+                      {isAdmin && (
+                        <Link className='btn btn-primary my-2 mx-2' to={`/user/assign/list/${id}`}>Assigned Users</Link>
+                      )}
+                      {isProjectManager && (
+                        <Link className='btn btn-primary my-2 mx-2' to={`/user/assign/list/${id}`}>Assigned Users</Link>
+                      )}
                     </li>
                   </ul>
                 </div>

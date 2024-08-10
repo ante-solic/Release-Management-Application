@@ -19,10 +19,8 @@ export default function UserEdit() {
 
     const{username,email,password,firstname,lastname} = user
 
-    const onInputChange=(e)=>{
-
-        setUser({...user,[e.target.name]:e.target.value})
-
+    const onInputChange = (e) => {
+        setUser({ ...user, [e.target.name]: e.target.value });
     };
 
     useEffect(()=>{
@@ -48,10 +46,10 @@ export default function UserEdit() {
         navigate("/user/view/all")
     }
 
-    const loadUser = async ()=>{
-        const result = await axios.get(`/user/${id}`)
-        setUser(result.data)
-    };
+    const loadUser = async () => {
+        const result = await axios.get(`/user/${id}`);
+        setUser(result.data);
+      };
     
   return (
     <div className='container'>
@@ -69,7 +67,7 @@ export default function UserEdit() {
                 </div>
                 <div className='mb-3'>
                     <label htmlFor='Password' className='form-label'>Password</label>
-                    <input type={"password"}  className='form-control' placeholder='Enter password' name="password" value={password} onChange={(e)=>onInputChange(e)}></input>
+                    <input type={"password"} className='form-control' placeholder='Enter new password (optional)' name="password" value={password} onChange={(e)=>onInputChange(e)} />
                 </div>
                 <div className='mb-3'>
                     <label htmlFor='Firstname' className='form-label'>Firstname</label>
