@@ -18,44 +18,66 @@ export default function ProjectList() {
     const {id} = useParams();
     const [isAdmin, setIsAdmin] = useState(false); 
     const [isProjectManager, setIsProjectManager] = useState(false); 
+    const [isReleaseManager, setIsReleaseManager] = useState(false);
+    const [isDeveloper, setIsDeveloper] = useState(false);
+    const [userId, setUserId] = useState('');
  
 
-    useEffect(()=>{
+    useEffect(() => {
         const token = localStorage.getItem('jwtToken');
+        const storedUserId = localStorage.getItem('userId');
         console.log('Token from local storage:', token);
-    
+
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const decodedToken = jwtDecode(token);
             const rolesFromToken = decodedToken.authorities ? decodedToken.authorities.split(',') : [];
-            if (rolesFromToken.includes('ROLE_ADMIN')) {
-                setIsAdmin(true);
-            }
-            if (rolesFromToken.includes('ROLE_PROJECT_MANAGER')) {
-                setIsProjectManager(true);
-            }
+
+            setIsAdmin(rolesFromToken.includes('ROLE_ADMIN'));
+            setIsProjectManager(rolesFromToken.includes('ROLE_PROJECT_MANAGER'));
+            setIsReleaseManager(rolesFromToken.includes('ROLE_RELEASE_MANAGER'));
+            setIsDeveloper(rolesFromToken.includes('ROLE_DEVELOPER'));
+
+            setUserId(storedUserId || ''); 
         } else {
             setIsAuthenticated(false);
         }
-        loadProjects();
-    },[page, size, sortBy, sortDir, filter]);
+    }, []);
 
-    if (!isAuthenticated) {
-        navigate("/login")
-    }
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
 
-    const loadProjects=async()=>{
-        const result = await axios.get("/project/find/all", {
-            params: {
-                page,
-                size,
-                sortBy,
-                sortDir,
-                filter
-            }
-        });
-        setProjects(result.data.content || []);
-        setTotalPages(result.data.totalPages);
+        if (isAdmin) {
+            loadProjects();
+        } else if (isProjectManager || isReleaseManager || isDeveloper) {
+            loadAssignedProjects(page);
+        }
+    }, [page, size, sortBy, sortDir, filter, isAdmin, isProjectManager, isReleaseManager, isDeveloper]);
+
+    const loadProjects = async () => {
+        try {
+            const params = { page, size, sortBy, sortDir, filter };
+            const result = await axios.get('/project/find/all', { params });
+            setProjects(result.data.content || []);
+            setTotalPages(result.data.totalPages);
+        } catch (error) {
+            console.error('Error loading projects:', error);
+        }
+    };
+
+    const loadAssignedProjects = async (pageNumber) => {
+        try {
+            const params = { page: pageNumber, size, sortBy, sortDir, filter };
+            const result = await axios.get(`/project/find/assigned/${userId}`, { params });
+            console.log('Loaded assigned projects:', result.data);
+            setProjects(result.data.content || []);
+            setTotalPages(result.data.totalPages);
+        } catch (error) {
+            console.error('Error loading assigned projects:', error);
+        }
     };
 
     const deleteProject=async (id)=>{

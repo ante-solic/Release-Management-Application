@@ -8,22 +8,24 @@ import com.asolic.ReleaseManagement.models.Project;
 import com.asolic.ReleaseManagement.models.Role;
 import com.asolic.ReleaseManagement.models.User;
 import com.asolic.ReleaseManagement.repositories.ProjectRepository;
+import com.asolic.ReleaseManagement.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class ProjectServiceImpl implements ProjectService{
     private final ProjectRepository projectRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
     private final ProjectMapper projectMapper;
 
 
@@ -56,6 +58,40 @@ public class ProjectServiceImpl implements ProjectService{
 
         return projectRepository.findAll(pageable);
     }
+
+    public Page<Project> findAllAssignedProjects(Pageable pageable, String filter, UUID userId) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        Set<UUID> userProjectIds = user.getProjects().stream()
+                .map(Project::getId)
+                .collect(Collectors.toSet());
+
+        List<Project> filteredProjects;
+
+        if (filter != null && !filter.isEmpty()) {
+            filteredProjects = projectRepository.findByNameContaining(filter).stream()
+                    .filter(project -> userProjectIds.contains(project.getId()))
+                    .collect(Collectors.toList());
+        } else {
+            filteredProjects = projectRepository.findAll().stream()
+                    .filter(project -> userProjectIds.contains(project.getId()))
+                    .collect(Collectors.toList());
+        }
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), filteredProjects.size());
+
+        if (start > end) {
+            return new PageImpl<>(Collections.emptyList(), pageable, filteredProjects.size());
+        }
+
+        List<Project> paginatedProjects = filteredProjects.subList(start, end);
+
+        return new PageImpl<>(paginatedProjects, pageable, filteredProjects.size());
+    }
+
+
 
     public Project updateProject(ProjectDto updatedProjectDto, UUID projectId){
         Project project = projectRepository.findById(projectId).get();

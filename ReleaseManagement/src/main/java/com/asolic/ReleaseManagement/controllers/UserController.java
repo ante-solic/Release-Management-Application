@@ -37,6 +37,7 @@ public class UserController {
     }
 
     @GetMapping("/username/{username}")
+    @PreAuthorize("hasAnyRole('ROLE_PROJECT_MANAGER', 'ROLE_ADMIN', 'ROLE_RELEASE_MANAGER', 'ROLE_DEVELOPER',)")
     public User findUserByUsername(@PathVariable String username) throws UserNotFoundException{
         return userService.findUserByUsername(username);
     }

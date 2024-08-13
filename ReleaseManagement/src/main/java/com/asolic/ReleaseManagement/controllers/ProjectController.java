@@ -47,6 +47,18 @@ public class ProjectController {
         return projectService.findAllProjects(pageable, filter);
     }
 
+    @GetMapping("/find/assigned/{userId}")
+    public Page<Project> getAllAssignedProjects(
+            @PathVariable UUID userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(required = false) String filter) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+        return projectService.findAllAssignedProjects(pageable, filter, userId);
+    }
+
     @PutMapping("/update/{projectId}")
     @PreAuthorize("hasAnyRole('ROLE_PROJECT_MANAGER', 'ROLE_ADMIN')")
     public Project updateProject(@RequestBody ProjectDto updatedProjectDto, @PathVariable UUID projectId){

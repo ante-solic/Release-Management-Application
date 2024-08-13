@@ -78,7 +78,7 @@ export default function UserEdit() {
                     <input type={"text"}  className='form-control' placeholder='Enter lastname' name="lastname" value={lastname} onChange={(e)=>onInputChange(e)}></input>
                 </div>
                 <button type='submit' className='btn btn-outline-primary'>Submit</button>
-                <Link className='btn btn-outline-danger mx-2' to="/user/view/all">Cancel</Link>
+                <Link className='btn btn-outline-danger mx-2' to="/home">Cancel</Link>
                 </form>
             </div>
         </div>

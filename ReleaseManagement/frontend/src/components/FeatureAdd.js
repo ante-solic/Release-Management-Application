@@ -70,7 +70,9 @@ export default function FeatureAdd() {
                 </div>
                 <div className='mb-3'>
                     <label htmlFor='Release' className='form-label'>Release</label>
-                    <label>{release.name}</label>
+                    <div>
+                        <label className='form-control'>{release.name}</label>
+                    </div>
                 </div>
                 <div className='mb-3'>
                     <label htmlFor='status' className='form-label'>Status</label>

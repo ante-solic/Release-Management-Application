@@ -9,6 +9,7 @@ import com.asolic.ReleaseManagement.models.User;
 import com.asolic.ReleaseManagement.repositories.ProjectRepository;
 import com.asolic.ReleaseManagement.repositories.RoleRepository;
 import com.asolic.ReleaseManagement.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService{
 
     public User findUserByUsername(String username) throws UserNotFoundException{
         var user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User Not Found!"));
+        System.out.println("Fetched User ID: " + user.getId());
         return user;
     }
 
@@ -132,6 +134,7 @@ public class UserServiceImpl implements UserService{
         var user = userRepository.findById(userId).get();
 
         var project = projectRepository.findById(projectId).get();
+
         Set<Project> projects = user.getProjects();
         projects.add(project);
 
@@ -140,15 +143,27 @@ public class UserServiceImpl implements UserService{
         userRepository.save(user);
     }
 
-    public void unassignUser(UUID userId, UUID projectId){
-        var user = userRepository.findById(userId).get();
+    public void unassignUser(UUID userId, UUID projectId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
 
-        var project = projectRepository.findById(projectId).get();
-        Set<Project> projects = user.getProjects();
-        projects.remove(project);
+        System.out.println("Fetched User: " + user);
+        System.out.println("Fetched Project: " + project);
 
-        user.setProjects(projects);
+        // Log state of entities
+        System.out.println("User's Projects Before Removal: " + user.getProjects());
 
-        userRepository.save(user);
+        // Remove Project from User
+        boolean removedFromUser = user.getProjects().remove(project);
+        if (removedFromUser) {
+            userRepository.save(user);
+            System.out.println("User's Projects After Removal: " + user.getProjects());
+        } else {
+            System.out.println("Project was not found in user's projects.");
+        }
     }
+
+
 }

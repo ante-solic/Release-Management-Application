@@ -77,8 +77,10 @@ export default function ReleaseAdd() {
                     <input type={"date"}  className='form-control' placeholder='Enter release date' name="releaseDate"  value={releaseDate} onChange={(e)=>onInputChange(e)}></input>
                 </div>
                 <div className='mb-3'>
-                    <label htmlFor='Project' className='form-label'>Project</label>
-                    <label>{project.name}</label>
+                    <label htmlFor='Project' className='form-label'>Project </label>
+                    <div className='form-control'>
+                        <label>{project.name}</label>
+                    </div>
                 </div>
                 <button type='submit' className='btn btn-outline-primary'>Submit</button>
                 <Link className='btn btn-outline-danger mx-2' to="/project/view/all">Cancel</Link>

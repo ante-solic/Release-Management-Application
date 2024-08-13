@@ -30,19 +30,19 @@ export default function Home() {
                 <h1>Welcome to the App!</h1>
                 <p>Use the sections below to navigate through the application.</p>
                 <div className="card-group">
-                    <Link className="card project" to="/project/view/all">
+                    <Link className="table border shadow" to="/project/view/all">
                         <div className="card-content">
                             <h2>Projects</h2>
                             <p>Manage your projects here</p>
                         </div>
                     </Link>
-                    <Link className="card feature" to="/feature/view/all">
+                    <Link className="table border shadow" to="/feature/view/all">
                         <div className="card-content">
                             <h2>Features</h2>
                             <p>View and add features</p>
                         </div>
                     </Link>
-                    <Link className="card release" to="/release/view/all">
+                    <Link className="table border shadow" to="/release/view/all">
                         <div className="card-content">
                             <h2>Releases</h2>
                             <p>Track release schedules</p>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 export default function UserEditRole() {
     const { id } = useParams();
@@ -36,7 +36,6 @@ export default function UserEditRole() {
     const handleSave = async () => {
         if (selectedRole) {
             try {
-                // Send the selectedRole directly as a UUID string
                 await axios.put(`/user/update/role/${id}`, selectedRole, {
                     headers: {
                         'Content-Type': 'application/json'
@@ -59,9 +58,9 @@ export default function UserEditRole() {
     return (
         <div className='container'>
             <h2>Edit Role for {user.username}</h2>
-            <div>
+            <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow'>
                 {roles.map(role => (
-                    <div key={role.id}>
+                    <div className='col-md-6 offset-md-3 border rounded p-4 mt-2 shadow' key={role.id}>
                         <input
                             type="radio"
                             id={role.id}
@@ -74,7 +73,8 @@ export default function UserEditRole() {
                     </div>
                 ))}
             </div>
-            <button onClick={handleSave}>Save</button>
+            <button className='btn btn-primary mx-2' onClick={handleSave}>Save</button>
+            <Link className='btn btn-danger my-2 mx-2' to={"/project/view/all"}>Back</Link>
         </div>
     );
 }

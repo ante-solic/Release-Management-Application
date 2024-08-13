@@ -1,5 +1,6 @@
 package com.asolic.ReleaseManagement.repositories;
 
+import com.asolic.ReleaseManagement.models.Project;
 import com.asolic.ReleaseManagement.models.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,4 +24,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT u FROM User u LEFT JOIN u.projects p WHERE p IS NULL OR p.id <> :projectId")
     List<User> findAllNotInProject(@Param("projectId") UUID projectId);
+
 }

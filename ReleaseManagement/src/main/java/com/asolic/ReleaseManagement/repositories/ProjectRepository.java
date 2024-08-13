@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,4 +14,6 @@ import java.util.UUID;
 public interface ProjectRepository extends JpaRepository<Project, UUID> {
     Optional<Project> findByName(String name);
     Page<Project> findByNameContaining(String name, Pageable pageable);
+
+    List<Project> findByNameContaining(String name);
 }

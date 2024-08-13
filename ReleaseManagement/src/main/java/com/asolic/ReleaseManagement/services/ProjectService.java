@@ -19,6 +19,8 @@ public interface ProjectService {
 
     Page<Project> findAllProjects(Pageable pageable, String filter);
 
+    Page<Project> findAllAssignedProjects(Pageable pageable, String filter, UUID userId);
+
     Project updateProject(ProjectDto updatedProjectDto, UUID projectId);
 
     void deleteById(UUID id) throws ProjectNotFoundException;

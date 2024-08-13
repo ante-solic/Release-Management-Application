@@ -58,10 +58,20 @@ export default function UserAssignList() {
         setTotalPages(result.data.totalPages);
     };
 
-    const unassignUser=async (userId)=>{
-        await axios.delete(`/user/unassign/${userId}/${id}`)
-        loadUsers()
-    }
+    const unassignUser = async (userId) => {
+        try {
+            const response = await axios.delete(`/user/unassign/${userId}/${id}`);
+            if (response.status === 200) {
+                console.log(`Successfully unassigned user with ID: ${userId}` + ` from project with ID: ${id}`);
+                loadUsers(); 
+            } else {
+                console.error(`Failed to unassign user with ID: ${userId}. Status: ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error unassigning user:', error.response ? error.response.data : error.message);
+        }
+    };
+    
 
     const handlePageChange = (newPage) => {
         setPage(newPage);

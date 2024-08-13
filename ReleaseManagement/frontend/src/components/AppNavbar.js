@@ -12,6 +12,7 @@ export default function Navbar() {
 
     useEffect(() => {
         const token = localStorage.getItem('jwtToken');
+        const storedUserId = localStorage.getItem('userId');
         if (token) {
             setIsLoggedIn(true);
             try {
@@ -20,7 +21,10 @@ export default function Navbar() {
                 setRoles(rolesFromToken);
                 setUserName(decodedToken.username); 
 
-                fetchUserId(decodedToken.username);
+                setUserId(storedUserId || ''); 
+                if (!storedUserId) {
+                    fetchUserId(decodedToken.username);
+                }
             } catch (error) {
                 console.error('Error decoding JWT:', error);
                 setIsLoggedIn(false);
@@ -35,10 +39,12 @@ export default function Navbar() {
     const fetchUserId = async (userName) => {
         const result = await axios.get(`/user/username/${userName}`)
         setUserId(result.data.id)
+        localStorage.setItem('userId', result.data.id);
     };
 
     const handleLogout = () => {
         localStorage.removeItem('jwtToken');
+        localStorage.removeItem('userId');
         setIsLoggedIn(false);
         setRoles([]);
         navigate('/login');
@@ -49,7 +55,7 @@ export default function Navbar() {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
             <div className="container-fluid">
-                <a className="navbar-brand" href="/home">Release Management</a>
+                <a className="navbar-brand">Release Management</a>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +65,9 @@ export default function Navbar() {
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         {isLoggedIn && (
                             <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/home">Home</Link>
+                                </li>
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/project/view/all">Projects</Link>
                                 </li>
