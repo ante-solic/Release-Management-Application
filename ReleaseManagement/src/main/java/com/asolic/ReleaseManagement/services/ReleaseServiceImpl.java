@@ -98,6 +98,8 @@ public class ReleaseServiceImpl implements ReleaseService{
 
         var release = releaseMapper.toEntity(updatedReleaseDto);
 
+        release.setApproved(updatedReleaseDto.getApproved());
+        
         return releaseRepository.save(release);
     }
 

@@ -13,4 +13,5 @@ public class ReleaseDto {
     private Date createDate;
     private Date releaseDate;
     private ProjectDto project;
+    private Boolean approved;
 }

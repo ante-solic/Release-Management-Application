@@ -73,6 +73,12 @@ export default function Release() {
                         {release.releaseDate}
                     </li>
                     <li className='list-group-item'>
+                      <b>Approved: </b>
+                        <span style={{ color: release.approved ? 'green' : 'red' }}>
+                          {release.approved ? 'True' : 'False'}
+                        </span>
+                    </li>
+                    <li className='list-group-item'>
                       <b>Project: </b>
                         {release.project.name}
                     </li>

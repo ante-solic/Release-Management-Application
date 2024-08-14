@@ -14,10 +14,11 @@ export default function ReleaseEdit() {
         description:"",
         createDate:null,
         releaseDate:null,
+        approved:"",
         project: ""
     })
 
-    const{name,description,createDate,releaseDate,project} = release
+    const{name,description,createDate,releaseDate,approved,project} = release
 
     const onInputChange=(e)=>{
 
@@ -79,6 +80,13 @@ export default function ReleaseEdit() {
                 <div className='mb-3'>
                     <label htmlFor='ReleaseDate' className='form-label'>Release Date</label>
                     <input type={"date"}  className='form-control' placeholder='Enter release date' name="releaseDate" value={releaseDate} onChange={(e)=>onInputChange(e)}></input>
+                </div>
+                <div className='mb-3'>
+                    <label htmlFor='approved' className='form-label'>Approved</label>
+                    <select id='approved' className='form-control' value={approved ? 'true' : 'false'} onChange={(e) => onInputChange(e)} name='approved'>
+                        <option value='true'>True</option>
+                        <option value='false'>False</option>
+                    </select>
                 </div>
                 <div className='mb-3'>
                     <label htmlFor='Project' className='form-label'>Project</label>

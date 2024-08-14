@@ -29,6 +29,7 @@ public class Release {
     @JoinColumn(name="project_id", referencedColumnName = "id")
     private Project project;
 
+    private Boolean approved;
     public Release(){
 
     }

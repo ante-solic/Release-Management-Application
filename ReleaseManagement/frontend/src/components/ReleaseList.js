@@ -141,6 +141,7 @@ export default function ReleaseList() {
                         <th scope="col">Description</th>
                         <th scope="col">Create Date</th>
                         <th scope="col">Release Date</th>
+                        <th scope="col">Approved</th>
                         <th scope="col">Action</th>
                         </tr>
                     </thead>
@@ -153,6 +154,11 @@ export default function ReleaseList() {
                                 <td>{release.description}</td>
                                 <td>{release.createDate}</td>
                                 <td>{release.releaseDate}</td>
+                                <td>
+                                    <span style={{ color: release.approved ? 'green' : 'red' }}>
+                                        {release.approved ? 'True' : 'False'}
+                                    </span>
+                                </td>
                                 <td>
                                     <Link className='btn btn-primary mx-2' to={`/release/view/${release.id}`}>View</Link>
                                     {isAdmin && (
