@@ -6,19 +6,24 @@ import com.asolic.ReleaseManagement.mappers.FeatureMapper;
 import com.asolic.ReleaseManagement.models.Client;
 import com.asolic.ReleaseManagement.models.Feature;
 import com.asolic.ReleaseManagement.models.Release;
+import com.asolic.ReleaseManagement.models.Project;
 import com.asolic.ReleaseManagement.models.enums.EnableType;
 import com.asolic.ReleaseManagement.repositories.ClientRepository;
 import com.asolic.ReleaseManagement.repositories.FeatureRepository;
 import com.asolic.ReleaseManagement.repositories.ReleaseRepository;
+import com.asolic.ReleaseManagement.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.awt.desktop.SystemSleepEvent;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -27,6 +32,7 @@ public class FeatureServiceImpl implements FeatureService{
     private final FeatureMapper featureMapper;
     private final ClientRepository clientRepository;
     private final ReleaseRepository releaseRepository;
+    private final UserRepository userRepository;
 
     public void createFeature(FeatureDto featureDto){
         var feature = featureMapper.toEntity(featureDto);
@@ -47,6 +53,54 @@ public class FeatureServiceImpl implements FeatureService{
         }
 
         return featureRepository.findAll(pageable);
+    }
+
+    public Page<Feature> findAllAssignedFeatures(Pageable pageable, String filter, UUID userId) {
+        // Fetch user and collect project IDs
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        Set<UUID> userProjectIds = user.getProjects().stream()
+                .map(Project::getId)
+                .collect(Collectors.toSet());
+
+        // Fetch releases assigned to the user's projects
+        List<Release> filteredReleases;
+
+        if (filter != null && !filter.isEmpty()) {
+            filteredReleases = releaseRepository.findByNameContaining(filter).stream()
+                    .filter(release -> userProjectIds.contains(release.getProject().getId()))
+                    .collect(Collectors.toList());
+        } else {
+            filteredReleases = releaseRepository.findAll().stream()
+                    .filter(release -> userProjectIds.contains(release.getProject().getId()))
+                    .collect(Collectors.toList());
+        }
+
+        Set<UUID> releaseIds = filteredReleases.stream()
+                .map(Release::getId)
+                .collect(Collectors.toSet());
+
+        // Fetch features assigned to these releases
+        Page<Feature> pagedFeatures;
+        if (filter != null && !filter.isEmpty()) {
+            pagedFeatures = featureRepository.findByNameContainingAndReleaseIdIn(filter, releaseIds, pageable);
+        } else {
+            pagedFeatures = featureRepository.findByReleaseIdIn(releaseIds, pageable);
+        }
+
+        // Return a new PageImpl with filtered results
+        return new PageImpl<>(pagedFeatures.getContent(), pageable, pagedFeatures.getTotalElements());
+    }
+
+
+    public Page<Feature> findAllAssignedReleaseFeatures(Pageable pageable,String filter,UUID releaseId){
+        var release = releaseRepository.findById(releaseId).get();
+        if (filter != null && !filter.isEmpty()) {
+            return featureRepository.findByReleaseAndNameContaining(release, filter, pageable);
+        }
+
+        return featureRepository.findByRelease(release, pageable);
     }
 
     public Feature updateFeature(FeatureDto updatedFeatureDto, UUID featureId) throws FeatureNotFoundException{

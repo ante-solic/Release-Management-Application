@@ -18,6 +18,8 @@ public interface FeatureService {
 
     FeatureDto getFeature(UUID id) throws FeatureNotFoundException;
     Page<Feature> getAllFeatures(Pageable pageable, String filter);
+    Page<Feature> findAllAssignedFeatures(Pageable pageable,String filter,UUID userId);
+    Page<Feature> findAllAssignedReleaseFeatures(Pageable pageable,String filter,UUID releaseId);
     Feature updateFeature(FeatureDto updatedFeatureDto, UUID featureId) throws FeatureNotFoundException;
     void deleteFeature(UUID feature) throws FeatureNotFoundException;
     boolean isFeatureEnabled(String featureName, String accountId) throws FeatureNotFoundException;

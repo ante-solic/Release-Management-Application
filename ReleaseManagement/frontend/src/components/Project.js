@@ -69,6 +69,10 @@ export default function User() {
                         <Link className='btn btn-primary my-2 mx-2' to={`/user/assign/list/${id}`}>Assigned Users</Link>
                       )}
                     </li>
+                    <li className='list-group-item'>
+                      <b>Releases: </b>
+                        <Link className='btn btn-primary my-2 mx-2' to={`/project/view/release/${id}`}>Check release dates</Link>
+                    </li>
                   </ul>
                 </div>
               </div>

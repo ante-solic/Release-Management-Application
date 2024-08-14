@@ -5,7 +5,7 @@ import {Link, useNavigate, useParams} from "react-router-dom"
 import { jwtDecode } from "jwt-decode";
 
 
-export default function ReleaseList() {
+export default function ProjectReleaseList() {
     let navigate = useNavigate();
     const [isAuthenticated, setIsAuthenticated] = useState(true);
 
@@ -50,46 +50,19 @@ export default function ReleaseList() {
             navigate('/login');
             return;
         }
-
-        if (isAdmin) {
-            loadReleases();
-        } else if (isReleaseManager || isProjectManager || isDeveloper) {
-            loadAssignedReleases(page);
-        }
+        loadProjectReleases();
     }, [page, size, sortBy, sortDir, filter, isAdmin, isReleaseManager, isProjectManager, isDeveloper, isAuthenticated]);
 
-    const loadReleases = async () => {
+    const loadProjectReleases = async () => {
         try {
             const params = { page, size, sortBy, sortDir, filter };
-            const result = await axios.get('/release/find/all', { params });
+            const result = await axios.get(`/release/find/assigned/project/${id}`, { params });
             setReleases(result.data.content || []);
             setTotalPages(result.data.totalPages);
         } catch (error) {
             console.error('Error loading releases:', error);
         }
     };
-
-    const loadAssignedReleases = async (pageNumber) => {
-        try {
-            const params = { page: pageNumber, size, sortBy, sortDir, filter };
-            const result = await axios.get(`/release/find/assigned/${userId}`, { params });
-            console.log('Loaded assigned releases:', result.data);
-            setReleases(result.data.content || []);
-            setTotalPages(result.data.totalPages);
-        } catch (error) {
-            console.error('Error loading assigned releases:', error);
-        }
-    };
-
-    const deleteRelease=async (id)=>{
-        await axios.delete(`/release/delete/${id}`)
-        if(isAdmin){
-            loadReleases();
-        }
-        if(isReleaseManager){
-            loadAssignedReleases();
-        }
-    }
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -141,33 +114,17 @@ export default function ReleaseList() {
                         <th scope="col">Description</th>
                         <th scope="col">Create Date</th>
                         <th scope="col">Release Date</th>
-                        <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             releases.map((release,index)=>(
                                 <tr>
-                                <th scope="row" key={index}>{index+1}</th>
-                                <td>{release.name}</td>
-                                <td>{release.description}</td>
-                                <td>{release.createDate}</td>
-                                <td>{release.releaseDate}</td>
-                                <td>
-                                    <Link className='btn btn-primary mx-2' to={`/release/view/${release.id}`}>View</Link>
-                                    {isAdmin && (
-                                    <>
-                                    <Link className='btn btn-outline-primary mx-2' to={`/release/edit/${release.id}`}>Edit</Link>
-                                    <button className='btn btn-danger mx-2' onClick={ () => deleteRelease(release.id) } >Delete</button>
-                                    </>
-                                    )}
-                                    {isReleaseManager && (
-                                    <>
-                                    <Link className='btn btn-outline-primary mx-2' to={`/release/edit/${release.id}`}>Edit</Link>
-                                    <button className='btn btn-danger mx-2' onClick={ () => deleteRelease(release.id) } >Delete</button>
-                                    </>
-                                    )}
-                                </td>
+                                    <th scope="row" key={index}>{index+1}</th>
+                                    <td>{release.name}</td>
+                                    <td>{release.description}</td>
+                                    <td>{release.createDate}</td>
+                                    <td>{release.releaseDate}</td>
                                 </tr>
                             ))
                         }

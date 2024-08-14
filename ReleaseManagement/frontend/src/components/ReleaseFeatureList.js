@@ -5,11 +5,11 @@ import {Link, useNavigate, useParams} from "react-router-dom"
 import { jwtDecode } from "jwt-decode";
 
 
-export default function ReleaseList() {
+export default function ReleaseFeatureList() {
     let navigate = useNavigate();
     const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-    const [releases,setReleases]=useState([])
+    const [features,setFeatures]=useState([])
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(3);
     const [sortBy, setSortBy] = useState('id');
@@ -50,46 +50,19 @@ export default function ReleaseList() {
             navigate('/login');
             return;
         }
-
-        if (isAdmin) {
-            loadReleases();
-        } else if (isReleaseManager || isProjectManager || isDeveloper) {
-            loadAssignedReleases(page);
-        }
+        loadReleaseFeatures();
     }, [page, size, sortBy, sortDir, filter, isAdmin, isReleaseManager, isProjectManager, isDeveloper, isAuthenticated]);
 
-    const loadReleases = async () => {
+    const loadReleaseFeatures = async () => {
         try {
             const params = { page, size, sortBy, sortDir, filter };
-            const result = await axios.get('/release/find/all', { params });
-            setReleases(result.data.content || []);
+            const result = await axios.get(`/feature/find/assigned/release/${id}`, { params });
+            setFeatures(result.data.content || []);
             setTotalPages(result.data.totalPages);
         } catch (error) {
-            console.error('Error loading releases:', error);
+            console.error('Error loading features:', error);
         }
     };
-
-    const loadAssignedReleases = async (pageNumber) => {
-        try {
-            const params = { page: pageNumber, size, sortBy, sortDir, filter };
-            const result = await axios.get(`/release/find/assigned/${userId}`, { params });
-            console.log('Loaded assigned releases:', result.data);
-            setReleases(result.data.content || []);
-            setTotalPages(result.data.totalPages);
-        } catch (error) {
-            console.error('Error loading assigned releases:', error);
-        }
-    };
-
-    const deleteRelease=async (id)=>{
-        await axios.delete(`/release/delete/${id}`)
-        if(isAdmin){
-            loadReleases();
-        }
-        if(isReleaseManager){
-            loadAssignedReleases();
-        }
-    }
 
     const handlePageChange = (newPage) => {
         setPage(newPage);
@@ -98,7 +71,7 @@ export default function ReleaseList() {
     return (
         <div className='container'>
             <div className='py-4'>
-            <div className='d-flex justify-content-between mb-3'>
+                <div className='d-flex justify-content-between mb-3'>
                     <input
                         type='text'
                         placeholder='Filter by name'
@@ -120,8 +93,7 @@ export default function ReleaseList() {
                             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                                 <option value='id'>ID</option>
                                 <option value='name'>Name</option>
-                                <option value='createDate'>CreateDate</option>
-                                <option value='releaseDate'>ReleaseDate</option>
+                                <option value='status'>Status</option>
                             </select>
                         </label>
                         <label>
@@ -139,34 +111,20 @@ export default function ReleaseList() {
                         <th scope="col">#</th>
                         <th scope="col">Name</th>
                         <th scope="col">Description</th>
-                        <th scope="col">Create Date</th>
-                        <th scope="col">Release Date</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            releases.map((release,index)=>(
+                            features.map((feature,index)=>(
                                 <tr>
                                 <th scope="row" key={index}>{index+1}</th>
-                                <td>{release.name}</td>
-                                <td>{release.description}</td>
-                                <td>{release.createDate}</td>
-                                <td>{release.releaseDate}</td>
+                                <td>{feature.name}</td>
+                                <td>{feature.description}</td>
                                 <td>
-                                    <Link className='btn btn-primary mx-2' to={`/release/view/${release.id}`}>View</Link>
-                                    {isAdmin && (
-                                    <>
-                                    <Link className='btn btn-outline-primary mx-2' to={`/release/edit/${release.id}`}>Edit</Link>
-                                    <button className='btn btn-danger mx-2' onClick={ () => deleteRelease(release.id) } >Delete</button>
-                                    </>
-                                    )}
-                                    {isReleaseManager && (
-                                    <>
-                                    <Link className='btn btn-outline-primary mx-2' to={`/release/edit/${release.id}`}>Edit</Link>
-                                    <button className='btn btn-danger mx-2' onClick={ () => deleteRelease(release.id) } >Delete</button>
-                                    </>
-                                    )}
+                                    <span style={{ color: feature.status ? 'green' : 'red' }}>
+                                        {feature.status ? 'On' : 'Off'}
+                                    </span>
                                 </td>
                                 </tr>
                             ))

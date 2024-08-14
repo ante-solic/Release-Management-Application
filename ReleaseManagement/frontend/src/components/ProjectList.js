@@ -82,7 +82,12 @@ export default function ProjectList() {
 
     const deleteProject=async (id)=>{
         await axios.delete(`/project/delete/${id}`)
-        loadProjects()
+        if(isAdmin){
+            loadProjects();
+        }
+        if(isProjectManager){
+            loadAssignedProjects();
+        }
     }
 
     const handlePageChange = (newPage) => {

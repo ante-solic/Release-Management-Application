@@ -19,31 +19,45 @@ export default function FeatureList() {
     const [totalPages, setTotalPages] = useState(0);
     const {id} = useParams();
     const [isAdmin, setIsAdmin] = useState(false); 
-    const [isDeveloper, setIsDeveloper] = useState(false); 
+    const [isProjectManager, setIsProjectManager] = useState(false); 
+    const [isReleaseManager, setIsReleaseManager] = useState(false);
+    const [isDeveloper, setIsDeveloper] = useState(false);
+    const [userId, setUserId] = useState('');
 
     useEffect(()=>{
         const token = localStorage.getItem('jwtToken');
+        const storedUserId = localStorage.getItem('userId');
         console.log('Token from local storage:', token);
-    
+
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             const decodedToken = jwtDecode(token);
             const rolesFromToken = decodedToken.authorities ? decodedToken.authorities.split(',') : [];
-            if (rolesFromToken.includes('ROLE_ADMIN')) {
-                setIsAdmin(true);
-            }
-            if (rolesFromToken.includes('ROLE_DEVELOPER')) {
-                setIsDeveloper(true);
-            }
+
+            setIsAdmin(rolesFromToken.includes('ROLE_ADMIN'));
+            setIsProjectManager(rolesFromToken.includes('ROLE_PROJECT_MANAGER'));
+            setIsReleaseManager(rolesFromToken.includes('ROLE_RELEASE_MANAGER'));
+            setIsDeveloper(rolesFromToken.includes('ROLE_DEVELOPER'));
+
+
+            setUserId(storedUserId || ''); 
         } else {
             setIsAuthenticated(false);
         }
-        loadFeatures();
-    },[page, size, sortBy, sortDir, filter]);
+    }, []);
 
-    if (!isAuthenticated) {
-        navigate("/login")
-    }
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
+
+        if (isAdmin) {
+            loadFeatures();
+        } else if (isReleaseManager || isProjectManager || isDeveloper) {
+            loadAssignedFeatures(page);
+        }
+    }, [page, size, sortBy, sortDir, filter, isAdmin, isReleaseManager, isProjectManager, isDeveloper, isAuthenticated]);
 
     const loadFeatures=async()=>{
         const result = await axios.get("/feature/find/all", {
@@ -59,9 +73,26 @@ export default function FeatureList() {
         setTotalPages(result.data.totalPages);
     };
 
+    const loadAssignedFeatures = async (pageNumber) => {
+        try {
+            const params = { page: pageNumber, size, sortBy, sortDir, filter };
+            const result = await axios.get(`/feature/find/assigned/${userId}`, { params });
+            console.log('Loaded assigned features:', result.data);
+            setFeatures(result.data.content || []);
+            setTotalPages(result.data.totalPages);
+        } catch (error) {
+            console.error('Error loading assigned features:', error);
+        }
+    };
+
     const deleteFeature=async (id)=>{
         await axios.delete(`/feature/delete/${id}`)
-        loadFeatures()
+        if(isAdmin){
+            loadFeatures();
+        }
+        if(isDeveloper){
+            loadAssignedFeatures();
+        }
     }
 
     const handlePageChange = (newPage) => {

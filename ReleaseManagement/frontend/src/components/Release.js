@@ -76,6 +76,10 @@ export default function Release() {
                       <b>Project: </b>
                         {release.project.name}
                     </li>
+                    <li className='list-group-item'>
+                      <b>Features: </b>
+                        <Link className='btn btn-primary my-2' to={`/release/view/feature/${id}`}>Track Features</Link>
+                    </li>
                   </ul>
                 </div>
               </div>

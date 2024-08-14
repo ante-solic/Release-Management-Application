@@ -4,6 +4,7 @@ import com.asolic.ReleaseManagement.dto.FeatureDto;
 import com.asolic.ReleaseManagement.exceptions.FeatureNotFoundException;
 import com.asolic.ReleaseManagement.models.Client;
 import com.asolic.ReleaseManagement.models.Feature;
+import com.asolic.ReleaseManagement.models.Release;
 import com.asolic.ReleaseManagement.services.FeatureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -52,6 +53,30 @@ public class FeatureController {
             @RequestParam(required = false) String filter) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
         return featureService.getAllFeatures(pageable, filter);
+    }
+
+    @GetMapping("/find/assigned/{userId}")
+    public Page<Feature> getAllAssignedFeatures(
+            @PathVariable UUID userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(required = false) String filter) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+        return featureService.findAllAssignedFeatures(pageable, filter, userId);
+    }
+
+    @GetMapping("/find/assigned/release/{releaseId}")
+    public Page<Feature> getAllAssignedProjectReleases(
+            @PathVariable UUID releaseId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(required = false) String filter) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+        return featureService.findAllAssignedReleaseFeatures(pageable, filter, releaseId);
     }
 
     @PutMapping("/update/{id}")

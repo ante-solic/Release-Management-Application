@@ -2,6 +2,7 @@ package com.asolic.ReleaseManagement.controllers;
 
 import com.asolic.ReleaseManagement.dto.ReleaseDto;
 import com.asolic.ReleaseManagement.exceptions.ReleaseNotFoundException;
+import com.asolic.ReleaseManagement.models.Project;
 import com.asolic.ReleaseManagement.models.Release;
 import com.asolic.ReleaseManagement.services.ReleaseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,30 @@ public class ReleaseController {
             @RequestParam(required = false) String filter) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
         return releaseService.findAllReleases(pageable, filter);
+    }
+
+    @GetMapping("/find/assigned/{userId}")
+    public Page<Release> getAllAssignedReleases(
+            @PathVariable UUID userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(required = false) String filter) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+        return releaseService.findAllAssignedReleases(pageable, filter, userId);
+    }
+
+    @GetMapping("/find/assigned/project/{projectId}")
+    public Page<Release> getAllAssignedProjectReleases(
+            @PathVariable UUID projectId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir,
+            @RequestParam(required = false) String filter) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDir), sortBy));
+        return releaseService.findAllAssignedProjectReleases(pageable, filter, projectId);
     }
 
     @PutMapping("/update/{releaseId}")

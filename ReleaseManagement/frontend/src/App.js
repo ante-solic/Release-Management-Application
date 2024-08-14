@@ -13,6 +13,7 @@ import UserAssignList from './components/UserAssignList';
 import UserAssign from './components/UserAssign';
 import UserEditRole from './components/UserEditRole';
 import ProjectList from './components/ProjectList';
+import ProjectReleaseList from './components/ProjectReleaseList';
 import ProjectEdit from './components/ProjectEdit';
 import Project from './components/Project';
 import ProjectAdd from './components/ProjectAdd';
@@ -20,6 +21,7 @@ import ReleaseAdd from './components/ReleaseAdd';
 import ReleaseList from './components/ReleaseList';
 import ReleaseEdit from './components/ReleaseEdit';
 import Release from './components/Release';
+import ReleaseFeatureList from './components/ReleaseFeatureList';
 import FeatureAdd from './components/FeatureAdd';
 import FeatureList from './components/FeatureList';
 import FeatureEdit from './components/FeatureEdit';
@@ -53,11 +55,13 @@ function App() {
         <Route exact path="/project/edit/:id" element={<ProjectEdit></ProjectEdit>}/>
         <Route exact path="/project/create" element={<ProjectAdd></ProjectAdd>}/>
         <Route exact path="/project/view/:id" element={<Project></Project>}/>
+        <Route exact path="/project/view/release/:id" element={<ProjectReleaseList></ProjectReleaseList>}/>
 
         <Route exact path="/release/create/:id" element={<ReleaseAdd></ReleaseAdd>}/>
         <Route exact path="/release/view/all" element={<ReleaseList></ReleaseList>}/>
         <Route exact path="/release/edit/:id" element={<ReleaseEdit></ReleaseEdit>}/>
         <Route exact path="/release/view/:id" element={<Release></Release>}/>
+        <Route exact path="/release/view/feature/:id" element={<ReleaseFeatureList></ReleaseFeatureList>}/>
 
         <Route exact path="/feature/create/:id" element={<FeatureAdd></FeatureAdd>}/>
         <Route exact path="/feature/view/all" element={<FeatureList></FeatureList>}/>

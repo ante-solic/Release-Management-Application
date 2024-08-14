@@ -15,5 +15,11 @@ import java.util.UUID;
 public interface ReleaseRepository extends JpaRepository<Release, UUID> {
     List<Release> findByProject(Project project);
 
+    Page<Release> findByProjectAndNameContaining(Project project, String name, Pageable pageable);
+
+    Page<Release> findByProject(Project project, Pageable pageable);
+
     Page<Release> findByNameContaining(String name, Pageable pageable);
+
+    List<Release> findByNameContaining(String name);
 }
